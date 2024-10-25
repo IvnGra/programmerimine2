@@ -1,11 +1,21 @@
-﻿namespace KooliProjekt.Data
-{
-    public class leaderboard
-    {
-        public int leaderboard_id { get; set; }
-        public int tournament_id { get; set; }
-        public int user_id { get; set; }
-        public int total_id { get; set; }
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace KooliProjekt.Data
+{
+    public class Leaderboard
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [ForeignKey("Tournament")]
+        public int TournamentId { get; set; }
+        public Tournament? Tournament { get; set; }
+
+        [ForeignKey("User")]
+        public int UserId { get; set; }
+        public User? User { get; set; }
+
+        public int Total_id { get; set; }
     }
 }

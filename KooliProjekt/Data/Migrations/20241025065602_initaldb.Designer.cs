@@ -4,6 +4,7 @@ using KooliProjekt.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KooliProjekt.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241025065602_initaldb")]
+    partial class initaldb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +59,7 @@ namespace KooliProjekt.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Match_time")
+                    b.Property<DateTime?>("Match_time")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Round")
@@ -99,9 +102,6 @@ namespace KooliProjekt.Data.Migrations
                     b.Property<int>("MatchId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PointsEarned")
-                        .HasColumnType("int");
-
                     b.Property<int>("Team1_predicted_goals")
                         .HasColumnType("int");
 
@@ -109,6 +109,9 @@ namespace KooliProjekt.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("points_earned")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -128,8 +131,7 @@ namespace KooliProjekt.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("TeamName")
-                        .IsRequired()
+                    b.Property<string>("team_name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -145,14 +147,13 @@ namespace KooliProjekt.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime>("End_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime>("Start_datebigit")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("TournamentName")
-                        .IsRequired()
+                    b.Property<string>("Tournament_name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -168,13 +169,11 @@ namespace KooliProjekt.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsAdmin")
+                    b.Property<bool>("Is_Admin")
                         .HasColumnType("bit");
 
                     b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -407,13 +406,13 @@ namespace KooliProjekt.Data.Migrations
                     b.HasOne("KooliProjekt.Data.Team", "Team1")
                         .WithMany()
                         .HasForeignKey("Team1Id")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KooliProjekt.Data.Team", "Team2")
                         .WithMany()
                         .HasForeignKey("Team2Id")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KooliProjekt.Data.Tournament", "Tournament")

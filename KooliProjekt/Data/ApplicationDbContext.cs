@@ -9,18 +9,13 @@ namespace KooliProjekt.Data
             : base(options)
         {
         }
-        public DbSet<User> User { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<User>().HasNoKey();
-            modelBuilder.Entity<leaderboard>().HasNoKey();
-            modelBuilder.Entity<match>().HasNoKey();
-        }
-        public DbSet<tournament> Tournament { get; set; }
-        public DbSet<team> Team { get; set; }
-        public DbSet<prediction> Prediction { get; set; }
-        public DbSet<match> Match { get; set; }
-        public DbSet<leaderboard> Leaderboard { get; set; }
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<Tournament> Tournaments { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<Prediction> Predictions { get; set; }
+        public DbSet<Match> Matchs { get; set; }
+        public DbSet<Leaderboard> Leaderboards { get; set; }
         
     }
 }

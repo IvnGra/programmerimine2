@@ -1,11 +1,17 @@
-﻿namespace KooliProjekt.Data
-{
-    public class tournament
-    {
-        public int Tournament_id { get; set; }
-        public string Tournament_name { get; set; }
-        public DateTime Start_datebigit { get; set; } = DateTime.Now;
-        public DateTime End_date { get; set; } = DateTime.Now;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
+namespace KooliProjekt.Data
+{
+    public class Tournament
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required] // Ensures tournament name is not null
+        public string TournamentName { get; set; } = string.Empty; // Default value to prevent null
+
+        public DateTime StartDate { get; set; } = DateTime.Now; // Use clearer naming
+        public DateTime EndDate { get; set; } = DateTime.Now; // Use clearer naming
     }
 }

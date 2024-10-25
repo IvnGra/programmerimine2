@@ -1,14 +1,13 @@
-﻿namespace KooliProjekt.Data
-{
-    public class team
-    {
-        public int team_id { get; set; }
-        public string team_name { get; set; }
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace KooliProjekt.Data
+{
+    public class Team
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required] // Ensures team name is not null
+        public string TeamName { get; set; } = string.Empty; // Default value to prevent null
     }
 }
-
-    
-    
-
-    
