@@ -17,5 +17,6 @@ namespace KooliProjekt.Data
         public User? User { get; set; }
 
         public int Total_id { get; set; }
+        public string Name { get; set; }
     }
 }
