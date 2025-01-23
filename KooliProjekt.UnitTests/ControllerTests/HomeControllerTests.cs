@@ -10,7 +10,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public void Index_should_return_index_view()
         {
             // Arrange
-            var controller = new HomeController();
+            var controller = new HomeController(); 
 
             // Act
             var result = controller.Index() as ViewResult;

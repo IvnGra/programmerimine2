@@ -16,6 +16,10 @@ namespace KooliProjekt.Data
         public DbSet<Prediction> Predictions { get; set; }
         public DbSet<Match> Matchs { get; set; }
         public DbSet<Leaderboard> Leaderboards { get; set; }
-        
+
+        public void List(object page, int v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
