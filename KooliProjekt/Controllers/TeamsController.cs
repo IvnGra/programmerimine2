@@ -19,9 +19,9 @@ namespace KooliProjekt.Controllers
         }
 
         // GET: Teams
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Teams.ToListAsync());
+            return View(await _context.Teams.GetPagedAsync(page, 5));
         }
 
         // GET: Teams/Details/5

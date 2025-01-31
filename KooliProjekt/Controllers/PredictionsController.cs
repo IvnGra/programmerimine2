@@ -19,10 +19,10 @@ namespace KooliProjekt.Controllers
         }
 
         // GET: Predictions
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var applicationDbContext = _context.Predictions.Include(p => p.Match).Include(p => p.User);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await applicationDbContext.GetPagedAsync(page, 5));
         }
 
         // GET: Predictions/Details/5

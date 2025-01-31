@@ -19,10 +19,10 @@ namespace KooliProjekt.Controllers
         }
 
         // GET: Matches
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page=5)
         {
             var applicationDbContext = _context.Matchs.Include(m => m.Team1).Include(m => m.Team2).Include(m => m.Tournament);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await applicationDbContext.GetPagedAsync(page, 5));
         }
 
         // GET: Matches/Details/5

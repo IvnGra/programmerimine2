@@ -1,4 +1,6 @@
-﻿@model IEnumerable<KooliProjekt.Data.Match>
+﻿@model PagedResult<KooliProjekt.Data.Match>
+
+@(await Component.InvokeAsync<PagerViewComponent>(Model))
 
 @{
     ViewData["Title"] = "Index";
@@ -12,54 +14,26 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Tournament)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team1)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Match_time)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Round)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team1_goals)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Team2_goals)
-            </th>
+            <th> Tournament </th>
+            <th> Team1 </th>
+            <th> Team2 </th>
+            <th> Match_time </th>
+            <th> Round </th>
+            <th> Team1_goals </th>
+            <th> Team2_goals </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Results) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tournament.TournamentName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Team1.TeamName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Team2.TeamName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Match_time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Round)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Team1_goals)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Team2_goals)
-            </td>
+            <td> @item.Tournament</td>
+            <td> @item.Team1?.TeamName </td>
+            <td> @item.Team2?.TeamName </td>
+            <td> @item.Match_time </td>
+            <td> @item.Round </td>
+            <td> @item.Team1_goals </td>
+            <td> @item.Team2_goals </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
@@ -69,3 +43,5 @@
 }
     </tbody>
 </table>
+
+@(await Component.InvokeAsync<PagerViewComponent>(Model))
