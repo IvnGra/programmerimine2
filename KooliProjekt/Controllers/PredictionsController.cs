@@ -1,100 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using KooliProjekt.Services;
+using KooliProjekt.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using KooliProjekt.Data;
 
 namespace KooliProjekt.Controllers
 {
     public class PredictionsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IPredictionService _predictionService;
 
-        public PredictionsController(ApplicationDbContext context)
+        public PredictionsController(IPredictionService predictionService)
         {
-            _context = context;
+            _predictionService = predictionService;
         }
 
-        // GET: Predictions
-        public async Task<IActionResult> Index(int page = 1)
-        {
-            var applicationDbContext = _context.Predictions.Include(p => p.Match).Include(p => p.User);
-            return View(await applicationDbContext.GetPagedAsync(page, 5));
-        }
 
-        // GET: Predictions/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var prediction = await _context.Predictions
-                .Include(p => p.Match)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var prediction = await _predictionService.Get(id);
             if (prediction == null)
             {
                 return NotFound();
             }
-
             return View(prediction);
         }
 
-        // GET: Predictions/Create
         public IActionResult Create()
         {
-            ViewData["MatchId"] = new SelectList(_context.Matchs, "Id", "Id");
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Username");
             return View();
         }
 
-        // POST: Predictions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,MatchId,Team1_predicted_goals,Team2_predicted_goals,PointsEarned")] Prediction prediction)
+        public async Task<IActionResult> Create(Prediction prediction)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(prediction);
-                await _context.SaveChangesAsync();
+                await _predictionService.Save(prediction);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MatchId"] = new SelectList(_context.Matchs, "Id", "Id", prediction.MatchId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Username", prediction.UserId);
             return View(prediction);
         }
 
-        // GET: Predictions/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var prediction = await _context.Predictions.FindAsync(id);
+            var prediction = await _predictionService.Get(id);
             if (prediction == null)
             {
                 return NotFound();
             }
-            ViewData["MatchId"] = new SelectList(_context.Matchs, "Id", "Id", prediction.MatchId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Username", prediction.UserId);
             return View(prediction);
         }
 
-        // POST: Predictions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,MatchId,Team1_predicted_goals,Team2_predicted_goals,PointsEarned")] Prediction prediction)
+        public async Task<IActionResult> Edit(int id, Prediction prediction)
         {
             if (id != prediction.Id)
             {
@@ -103,67 +64,28 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(prediction);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PredictionExists(prediction.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _predictionService.Save(prediction);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MatchId"] = new SelectList(_context.Matchs, "Id", "Id", prediction.MatchId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Username", prediction.UserId);
             return View(prediction);
         }
 
-        // GET: Predictions/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var prediction = await _context.Predictions
-                .Include(p => p.Match)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var prediction = await _predictionService.Get(id);
             if (prediction == null)
             {
                 return NotFound();
             }
-
             return View(prediction);
         }
 
-        // POST: Predictions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var prediction = await _context.Predictions.FindAsync(id);
-            if (prediction != null)
-            {
-                _context.Predictions.Remove(prediction);
-            }
-
-            await _context.SaveChangesAsync();
+            await _predictionService.Delete(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PredictionExists(int id)
-        {
-            return _context.Predictions.Any(e => e.Id == id);
         }
     }
 }

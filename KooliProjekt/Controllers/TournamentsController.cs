@@ -1,39 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using KooliProjekt.Data;
+using KooliProjekt.Models;
+using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KooliProjekt.Data;
+using System.Collections.Generic;
 
 namespace KooliProjekt.Controllers
 {
     public class TournamentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ITournamentsService _tournamentsService;
 
-        public TournamentsController(ApplicationDbContext context)
+        public TournamentsController(ITournamentsService tournamentsService)
         {
-            _context = context;
+            _tournamentsService = tournamentsService;
         }
 
         // GET: Tournaments
-        public async Task<IActionResult> Index(int page = 1)
-        {
-            return View(await _context.Tournaments.GetPagedAsync(page, 5));
-        }
 
         // GET: Tournaments/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var tournament = await _context.Tournaments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tournament = _tournamentsService.Get(id.Value);
             if (tournament == null)
             {
                 return NotFound();
@@ -49,43 +41,39 @@ namespace KooliProjekt.Controllers
         }
 
         // POST: Tournaments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TournamentName,StartDate,EndDate")] Tournament tournament)
+        public IActionResult Create([Bind("Id,TournamentName,StartDate,EndDate")] Tournament tournament)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tournament);
-                await _context.SaveChangesAsync();
+                _tournamentsService.Save(tournament);
                 return RedirectToAction(nameof(Index));
             }
             return View(tournament);
         }
 
         // GET: Tournaments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var tournament = await _context.Tournaments.FindAsync(id);
+            var tournament = _tournamentsService.Get(id.Value);
             if (tournament == null)
             {
                 return NotFound();
             }
+
             return View(tournament);
         }
 
         // POST: Tournaments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TournamentName,StartDate,EndDate")] Tournament tournament)
+        public IActionResult Edit(int id, [Bind("Id,TournamentName,StartDate,EndDate")] Tournament tournament)
         {
             if (id != tournament.Id)
             {
@@ -94,37 +82,21 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(tournament);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TournamentExists(tournament.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _tournamentsService.Save(tournament);
                 return RedirectToAction(nameof(Index));
             }
             return View(tournament);
         }
 
         // GET: Tournaments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var tournament = await _context.Tournaments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tournament = _tournamentsService.Get(id.Value);
             if (tournament == null)
             {
                 return NotFound();
@@ -136,21 +108,10 @@ namespace KooliProjekt.Controllers
         // POST: Tournaments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var tournament = await _context.Tournaments.FindAsync(id);
-            if (tournament != null)
-            {
-                _context.Tournaments.Remove(tournament);
-            }
-
-            await _context.SaveChangesAsync();
+            _tournamentsService.Delete(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TournamentExists(int id)
-        {
-            return _context.Tournaments.Any(e => e.Id == id);
         }
     }
 }
