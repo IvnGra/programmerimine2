@@ -12,5 +12,6 @@ namespace KooliProjekt.Data
         public string Username { get; set; } = string.Empty; // Default to prevent null
 
         public bool IsAdmin { get; set; } = false; // Default to false
+     
     }
 }

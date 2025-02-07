@@ -15,11 +15,11 @@ namespace KooliProjekt.Data
 
 
         public int Team1Id { get; set; }
-        [DeleteBehavior(DeleteBehavior.NoAction)]
+        
         public Team? Team1 { get; set; }
 
         public int Team2Id { get; set; }
-        [DeleteBehavior(DeleteBehavior.NoAction)]
+        
         public Team? Team2 { get; set; }
 
         public DateTime Match_time { get; set; } = DateTime.Now;
