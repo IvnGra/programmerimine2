@@ -32,7 +32,7 @@ namespace KooliProjekt.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Team team)
+        public async Task<IActionResult> Create([Bind("Id,TeamName")] Team team)
         {
             if (ModelState.IsValid)
             {

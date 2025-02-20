@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KooliProjekt.Data
 {
-    public class Prediction
+    public class Prediction : Entity
     {
         [Key]
         public int Id { get; set; }

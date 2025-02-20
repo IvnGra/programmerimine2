@@ -32,7 +32,7 @@ namespace KooliProjekt.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Leaderboard leaderboard)
+        public async Task<IActionResult> Create([Bind("Id,TournamentId,UserId,Total_id")] Leaderboard leaderboard)
         {
             if (ModelState.IsValid)
             {

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace KooliProjekt.Data
 {
-    public class Tournament
+    public class Tournament : Entity
     {
         [Key]
         public int Id { get; set; }

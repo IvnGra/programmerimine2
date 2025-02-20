@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KooliProjekt.Data
 {
-    public class Match
+    public class Match : Entity
     {
         [Key]
         public int Id { get; set; }

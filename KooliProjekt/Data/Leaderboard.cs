@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KooliProjekt.Data
 {
-    public class Leaderboard
+    public class Leaderboard : Entity
     {
         [Key]
         public int Id { get; set; }

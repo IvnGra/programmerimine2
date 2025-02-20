@@ -33,7 +33,7 @@ namespace KooliProjekt.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Prediction prediction)
+        public async Task<IActionResult> Create([Bind("Id,UserId,MatchId,Team1_predicted_goals,Team2_predicted_goals,PointsEarned")] Prediction prediction)
         {
             if (ModelState.IsValid)
             {
