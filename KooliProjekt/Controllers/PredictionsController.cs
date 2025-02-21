@@ -15,6 +15,12 @@ namespace KooliProjekt.Controllers
             _predictionService = predictionService;
         }
 
+        public async Task<IActionResult> Index(int page = 1, PredictionsIndexModel model = null)
+        {
+            model = model ?? new PredictionsIndexModel();
+            model.Data = await _predictionService.List(page, 10, model.Search);
+            return View(model);
+        }
 
         public async Task<IActionResult> Details(int id)
         {

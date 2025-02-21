@@ -15,6 +15,14 @@ namespace KooliProjekt.Controllers
             _matchService = matchService;
         }
 
+        public async Task<IActionResult> Index(int page = 1, MatchesIndexModel model = null)
+        {
+            model = model ?? new MatchesIndexModel();
+            model.Data = await _matchService.List(page, 10, model.Search);
+            return View(model);
+        }
+
+
         public async Task<IActionResult> Details(int id)
         {
             var match = await _matchService.Get(id);

@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Data;
+using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
@@ -12,7 +13,7 @@ namespace KooliProjekt.Services
             _context = context;
         }
 
-        public async Task<PagedResult<Team>> List(int page, int pageSize)
+        public async Task<PagedResult<Team>> List(int page, int pageSize, TeamsSearch search = null)
         {
             return await _context.Teams.GetPagedAsync(page, 5);
         }

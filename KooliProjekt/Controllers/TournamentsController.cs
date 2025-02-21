@@ -15,6 +15,12 @@ namespace KooliProjekt.Controllers
             _tournamentsService = tournamentsService;
         }
 
+        public async Task<IActionResult> Index(int page = 1, TournamentsIndexModel model = null)
+        {
+            model = model ?? new TournamentsIndexModel();
+            model.Data = await _tournamentsService.List(page, 10, model.Search);
+            return View(model);
+        }
         // GET: Tournaments
 
         // GET: Tournaments/Details/5

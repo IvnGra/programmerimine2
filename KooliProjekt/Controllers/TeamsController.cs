@@ -15,6 +15,12 @@ namespace KooliProjekt.Controllers
             _teamService = teamService;
         }
 
+        public async Task<IActionResult> Index(int page = 1, TeamsIndexModel model = null)
+        {
+            model = model ?? new TeamsIndexModel();
+            model.Data = await _teamService.List(page, 10, model.Search);
+            return View(model);
+        }
         public async Task<IActionResult> Details(int id)
         {
             var team = await _teamService.Get(id);

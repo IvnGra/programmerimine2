@@ -3,6 +3,7 @@ using KooliProjekt.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using KooliProjekt.Data;
+using KooliProjekt.Search;
 
 namespace KooliProjekt.Controllers
 {
@@ -15,6 +16,12 @@ namespace KooliProjekt.Controllers
             _leaderboardService = leaderboardService;
         }
 
+        public async Task<IActionResult> Index(int page = 1, LeaderboardsIndexModel model = null)
+        {
+            model = model ?? new LeaderboardsIndexModel();
+            model.Data = await _leaderboardService.List(page, 10, model.Search);
+            return View(model);
+        }
         public async Task<IActionResult> Details(int id)
         {
             var leaderboard = await _leaderboardService.Get(id);
