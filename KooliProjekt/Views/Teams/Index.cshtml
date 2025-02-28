@@ -1,4 +1,4 @@
-﻿@model PagedResult<KooliProjekt.Data.Team>
+﻿@model TeamsIndexModel
 
 
 @{
@@ -28,7 +28,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Results) {
+@foreach (var item in Model.Data.Results) {
         <tr>
             <td> @item.TeamName </td>
             <td>
@@ -41,4 +41,4 @@
     </tbody>
 </table>
 
-@(await Component.InvokeAsync<PagerViewComponent>(Model))
+@(await Component.InvokeAsync<PagerViewComponent>(Model.Data))

@@ -1,4 +1,4 @@
-﻿@model PagedResult<KooliProjekt.Data.Leaderboard>
+﻿@model LeaderboardsIndexModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,16 +9,17 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form method="get">
+<<form method="get">
     <div class="form-group">
         <label class="control-label">Märksõna</label>
-        <input asp-for="Search.keyword" class="form-control" />
+        <input asp-for="Search.Keyword" class="form-control" />
     </div>
     <div class="form-group">
         <button class="btn btn-primary">Otsi</button>
-        <a asp-controller="Leaderboards" asp-action="Index" class="btn btn-primary">Reset</a>
+        <a asp-controller="Categories" asp-action="Index" class="btn btn-primary">Reset</a>
     </div>
 </form>
+
 <table class="table">
     <thead>
         <tr>
@@ -30,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Results) {
+@foreach (var item in Model.Data.Results) {
         <tr>
             <td> @item.Tournament?.TournamentName </td>
             <td> @item.User?.Username </td>
@@ -46,4 +47,4 @@
     </tbody>
 </table>
 
-@(await Component.InvokeAsync<PagerViewComponent>(Model))
+@(await Component.InvokeAsync<PagerViewComponent>(Model.Data))

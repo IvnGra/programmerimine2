@@ -1,4 +1,4 @@
-﻿@model PagedResult<KooliProjekt.Data.Prediction>
+﻿@model PredictionsIndexModel
 
 @{
     ViewData["Title"] = "Index";
@@ -31,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Results) {
+@foreach (var item in Model.Data.Results) {
         <tr>
             <td> User.Username </td>
             <td> Match.Id </td>
