@@ -15,7 +15,17 @@ namespace KooliProjekt.Services
 
         public async Task<PagedResult<Prediction>> List(int page, int pageSize, PredictionsSearch search = null)
         {
-            return await _context.Predictions.GetPagedAsync(page, 5);
+            var query = _context.Predictions.AsQueryable();
+
+            search = search ?? new PredictionsSearch();
+
+            if (!string.IsNullOrWhiteSpace(search.Keyword))
+            {
+                query = query.Where(prediction => prediction.Name.Contains(search.Keyword) || prediction.Points.Contains(search.Keyword)); ;
+            }
+
+            return await query.GetPagedAsync(page, pageSize);
+
         }
 
         public async Task<Prediction> Get(int id)

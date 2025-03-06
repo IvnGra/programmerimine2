@@ -9,7 +9,7 @@ namespace KooliProjekt.Data
             : base(options)
         {
         }
-        public DbSet<User> User { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<Tournament> Tournaments { get; set; }
         public DbSet<Team> Teams { get; set; }

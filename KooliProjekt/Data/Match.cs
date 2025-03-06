@@ -12,7 +12,8 @@ namespace KooliProjekt.Data
 
         public int TournamentId { get; set; }
         public Tournament? Tournament { get; set; }
-
+        
+        public string  Name { get; set; }
 
         public int Team1Id { get; set; }
         

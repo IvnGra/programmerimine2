@@ -16,20 +16,19 @@ namespace KooliProjekt.Controllers
             _leaderboardService = leaderboardService;
         }
 
-        public async Task<IActionResult> Index(int page = 1, LeaderboardsIndexModel model = null)
+        public async Task<IActionResult> Index(int page = 1, LeaderboardsSearch search = null)
         {
-            model = model ?? new LeaderboardsIndexModel();
-            model.Data = await _leaderboardService.List(page, 10, model.Search);
-            return View(model);
-        }
-        public async Task<IActionResult> Details(int id)
-        {
-            var leaderboard = await _leaderboardService.Get(id);
-            if (leaderboard == null)
+            search = search ?? new LeaderboardsSearch();
+
+            var result = await _leaderboardService.List(page, 5, search);
+
+            var model = new LeaderboardsIndexModel
             {
-                return NotFound();
-            }
-            return View(leaderboard);
+                Search = search,
+                Data = result
+            };
+
+            return View(model);
         }
 
         public IActionResult Create()

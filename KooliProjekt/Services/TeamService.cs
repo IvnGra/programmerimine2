@@ -15,7 +15,17 @@ namespace KooliProjekt.Services
 
         public async Task<PagedResult<Team>> List(int page, int pageSize, TeamsSearch search = null)
         {
-            return await _context.Teams.GetPagedAsync(page, 5);
+            var query = _context.Teams.AsQueryable();
+
+            search = search ?? new TeamsSearch();
+
+            if (!string.IsNullOrWhiteSpace(search.Keyword))
+            {
+                query = query.Where(team => team.TeamName.Contains(search.Keyword) || team.TeamNumber.Contains(search.Keyword)); ;
+            }
+
+            return await query.GetPagedAsync(page, pageSize);
+
         }
 
         public async Task<Team> Get(int id)

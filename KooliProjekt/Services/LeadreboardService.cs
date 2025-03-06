@@ -15,7 +15,17 @@ namespace KooliProjekt.Services
 
         public async Task<PagedResult<Leaderboard>> List(int page, int pageSize, LeaderboardsSearch search = null)
         {
-            return await _context.Leaderboards.GetPagedAsync(page, 5);
+            var query = _context.Leaderboards.AsQueryable();
+
+            search = search ?? new LeaderboardsSearch();
+
+            if (!string.IsNullOrWhiteSpace(search.Keyword))
+            {
+                query = query.Where(leaderboard => leaderboard.Name.Contains(search.Keyword) || leaderboard.Score.Contains(search.Keyword)); ;
+            }
+
+            return await query.GetPagedAsync(page, pageSize);
+
         }
 
         public async Task<Leaderboard> Get(int id)

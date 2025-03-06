@@ -2,6 +2,8 @@
 using KooliProjekt.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using KooliProjekt.Models;
+using KooliProjekt.Search;
 using KooliProjekt.Data;
 
 namespace KooliProjekt.Controllers
@@ -15,10 +17,18 @@ namespace KooliProjekt.Controllers
             _matchService = matchService;
         }
 
-        public async Task<IActionResult> Index(int page = 1, MatchesIndexModel model = null)
+        public async Task<IActionResult> Index(int page = 1, MatchesSearch search = null)
         {
-            model = model ?? new MatchesIndexModel();
-            model.Data = await _matchService.List(page, 10, model.Search);
+            search = search ?? new MatchesSearch();
+
+            var result = await _matchService.List(page, 5, search);
+
+            var model = new MatchesIndexModel
+            {
+                Search = search,
+                Data = result
+            };
+
             return View(model);
         }
 
@@ -40,7 +50,7 @@ namespace KooliProjekt.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Match match)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Creation_date")] Match match)
         {
             if (ModelState.IsValid)
             {
@@ -62,7 +72,7 @@ namespace KooliProjekt.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Match match)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Creation_date")] Match match)
         {
             if (id != match.Id)
             {

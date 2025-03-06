@@ -1,5 +1,6 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
+using KooliProjekt.Search;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -15,10 +16,18 @@ namespace KooliProjekt.Controllers
             _tournamentsService = tournamentsService;
         }
 
-        public async Task<IActionResult> Index(int page = 1, TournamentsIndexModel model = null)
+        public async Task<IActionResult> Index(int page = 1, TournamentsSearch search = null)
         {
-            model = model ?? new TournamentsIndexModel();
-            model.Data = await _tournamentsService.List(page, 10, model.Search);
+            search = search ?? new TournamentsSearch();
+
+            var result = await _tournamentsService.List(page, 5, search);
+
+            var model = new TournamentsIndexModel
+            {
+                Search = search,
+                Data = result
+            };
+
             return View(model);
         }
         // GET: Tournaments

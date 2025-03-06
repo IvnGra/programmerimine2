@@ -1,6 +1,7 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace KooliProjekt.Services
 {
@@ -15,7 +16,17 @@ namespace KooliProjekt.Services
 
         public async Task<PagedResult<Match>> List(int page, int pageSize, MatchesSearch search = null)
         {
-            return await _context.Matchs.GetPagedAsync(page, 5);
+            var query = _context.Matchs.AsQueryable();
+
+            search = search ?? new MatchesSearch();
+
+            if (!string.IsNullOrWhiteSpace(search.Keyword))
+            {
+                query = query.Where(match => match.Name.Contains(search.Keyword) || match.Round.Contains(search.Keyword));;
+            }
+
+            return await query.GetPagedAsync(page, pageSize);
+                
         }
 
         public async Task<Match> Get(int id)
@@ -23,15 +34,15 @@ namespace KooliProjekt.Services
             return await _context.Matchs.FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task Save(Match list)
+        public async Task Save(Match match)
         {
-            if (list.Id == 0)
+            if (match.Id == 0)
             {
-                _context.Add(list);
+                _context.Add(match);
             }
             else
             {
-                _context.Update(list);
+                _context.Update(match);
             }
 
             await _context.SaveChangesAsync();

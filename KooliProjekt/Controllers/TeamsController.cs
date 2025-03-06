@@ -3,6 +3,7 @@ using KooliProjekt.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using KooliProjekt.Data;
+using KooliProjekt.Search;
 
 namespace KooliProjekt.Controllers
 {
@@ -15,10 +16,18 @@ namespace KooliProjekt.Controllers
             _teamService = teamService;
         }
 
-        public async Task<IActionResult> Index(int page = 1, TeamsIndexModel model = null)
+        public async Task<IActionResult> Index(int page = 1, TeamsSearch search = null)
         {
-            model = model ?? new TeamsIndexModel();
-            model.Data = await _teamService.List(page, 10, model.Search);
+            search = search ?? new TeamsSearch();
+
+            var result = await _teamService.List(page, 5, search);
+
+            var model = new TeamsIndexModel
+            {
+                Search = search,
+                Data = result
+            };
+
             return View(model);
         }
         public async Task<IActionResult> Details(int id)

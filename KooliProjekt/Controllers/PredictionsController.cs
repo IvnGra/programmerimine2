@@ -3,6 +3,7 @@ using KooliProjekt.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using KooliProjekt.Data;
+using KooliProjekt.Search;
 
 namespace KooliProjekt.Controllers
 {
@@ -15,10 +16,18 @@ namespace KooliProjekt.Controllers
             _predictionService = predictionService;
         }
 
-        public async Task<IActionResult> Index(int page = 1, PredictionsIndexModel model = null)
+        public async Task<IActionResult> Index(int page = 1, PredictionsSearch search = null)
         {
-            model = model ?? new PredictionsIndexModel();
-            model.Data = await _predictionService.List(page, 10, model.Search);
+            search = search ?? new PredictionsSearch();
+
+            var result = await _predictionService.List(page, 5, search);
+
+            var model = new PredictionsIndexModel
+            {
+                Search = search,
+                Data = result
+            };
+
             return View(model);
         }
 

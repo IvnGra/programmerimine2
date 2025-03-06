@@ -18,5 +18,6 @@ namespace KooliProjekt.Data
 
         public int Total_id { get; set; }
         public string? Name { get; set; }
+        public string? Score { get; set; }
     }
 }

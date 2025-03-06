@@ -7,5 +7,6 @@ namespace KooliProjekt.Models
     {
         public UsersSearch Search { get; set; }
         public PagedResult<User> Data { get; set; }
+        public int CurrentPage { get; set; }
     }
 }

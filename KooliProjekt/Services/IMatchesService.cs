@@ -1,5 +1,8 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Search;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
