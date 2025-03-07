@@ -26,6 +26,7 @@ namespace KooliProjekt
             builder.Services.AddScoped<IPredictionService, PredictionsService>();
             builder.Services.AddScoped<ITeamsService, TeamService>();
             builder.Services.AddScoped<ITournamentsService, TournamentService>();
+            builder.Services.AddScoped<IUserService, UserService>();
       
 
 
@@ -62,10 +63,8 @@ namespace KooliProjekt
 
                 context.Database.Migrate();
 
-                SeedData.GenerateUsers(context);
-                SeedData.GenerateMatch(context);
-                SeedData.GenerateTeams(context);
-                SeedData.GeneratePredictions(context);
+                SeedData.Generate(context);
+                
             }
 #endif
 

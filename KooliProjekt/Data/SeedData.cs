@@ -7,6 +7,15 @@ namespace KooliProjekt.Data
 {
     public static class SeedData
     {
+        public static void Generate(ApplicationDbContext context)
+        {
+            GenerateUsers(context);
+            GenerateMatch(context);
+            GenerateTournaments(context);
+            GenerateTournaments(context);
+            GenerateTeams(context);
+            GeneratePredictions(context);
+        }
         // Method to generate and seed match data
         public static void GenerateMatch(ApplicationDbContext context)
         {
@@ -94,7 +103,7 @@ namespace KooliProjekt.Data
                 new User { Username = "jane_doe", IsAdmin = false }
             };
 
-            context.User.AddRange(users);
+            context.Users.AddRange(users);
             context.SaveChanges();  // Save users to the database
         }
 

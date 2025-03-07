@@ -15,6 +15,12 @@ namespace KooliProjekt.Services
             _context = context;
         }
 
+        public async Task Create(User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<PagedResult<User>> List(int page, int pageSize, UsersSearch search = null)
         {
             var query = _context.Users.AsQueryable();

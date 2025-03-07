@@ -44,7 +44,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var user = await _userService.User
+            var user = await _userService.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
@@ -84,7 +84,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var user = await _userService.User.FindAsync(id);
+            var user = await _userService.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -135,7 +135,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var user = await _userService.User
+            var user = await _userService.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
@@ -150,10 +150,10 @@ namespace KooliProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _userService.User.FindAsync(id);
+            var user = await _userService.Users.FindAsync(id);
             if (user != null)
             {
-                _userService.User.Remove(user);
+                _userService.Users.Remove(user);
             }
 
             await _userService.SaveChangesAsync();
@@ -162,7 +162,7 @@ namespace KooliProjekt.Controllers
 
         private bool UserExists(int id)
         {
-            return _userService.User.Any(e => e.Id == id);
+            return _userService.Users.Any(e => e.Id == id);
         }
     }
 }
