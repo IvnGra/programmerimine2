@@ -23,7 +23,7 @@ namespace KooliProjekt.Services
 
             if (!string.IsNullOrWhiteSpace(search.Keyword))
             {
-                query = query.Where(tournament => tournament.TournamentName.Contains(search.Keyword) || tournament.TournamentDescription.Contains(search.Keyword)); ;
+                query = query.Where(tournament => tournament.TournamentName.Contains(search.Keyword)); ;
             }
 
             return await query.GetPagedAsync(page, pageSize);

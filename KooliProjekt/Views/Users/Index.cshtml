@@ -4,31 +4,49 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>User</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
+
+<!-- Search Form -->
+<form method="get">
+    <div class="form-group">
+        <label class="control-label">Keyword</label>
+        <input asp-for="Search.Keyword" class="form-control" />
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary">Search</button>
+        <a asp-controller="Users" asp-action="Index" class="btn btn-secondary">Reset</a>
+    </div>
+</form>
+
+<!-- Users Table -->
 <table class="table">
     <thead>
         <tr>
-            <th> Username </th>
-            <th> IsAdmin </th>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Password</th>
+            <th>Registration Time</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Data.Results) {
-        <tr>
-            <td> @item.Username </td>
-            <td> @item.IsAdmin </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Data.Results)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Username)</td>
+                <td>@Html.DisplayFor(modelItem => item.UserEmail)</td>
+                <td>@Html.DisplayFor(modelItem => item.IsAdmin)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

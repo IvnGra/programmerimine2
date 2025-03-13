@@ -23,14 +23,16 @@ namespace KooliProjekt.Data.Migrations
                 table: "Matchs",
                 column: "Team1Id",
                 principalTable: "Teams",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Matchs_Teams_Team2Id",
                 table: "Matchs",
                 column: "Team2Id",
                 principalTable: "Teams",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.NoAction);
         }
 
         /// <inheritdoc />

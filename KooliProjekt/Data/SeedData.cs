@@ -40,7 +40,8 @@ namespace KooliProjekt.Data
                 TournamentId = tournament1.Id,  // Use the valid tournament ID (first tournament)
                 Team1_goals = 5,
                 Team2_goals = 3,
-                Match_time = DateTime.Now
+                Match_time = DateTime.Now,
+                Name = "UEFA Europe League"
             },
             new Match
             {
@@ -49,7 +50,8 @@ namespace KooliProjekt.Data
                 TournamentId = tournament2.Id,  // Use the valid tournament ID (second tournament)
                 Team1_goals = 4,
                 Team2_goals = 2,
-                Match_time = DateTime.Now
+                Match_time = DateTime.Now,
+                Name = "UEFA Europe League"
             }
         };
 
@@ -74,13 +76,13 @@ namespace KooliProjekt.Data
             // Add sample teams
             var teams = new List<Team>
             {
-                new Team { TeamName = "Barcelona" },
-                new Team { TeamName = "FCflora" },
-                new Team { TeamName = "Manchester City" },
-                new Team { TeamName = "Manchester United" },
-                new Team { TeamName = "Legion" },
-                new Team { TeamName = "PSG" },
-                new Team { TeamName = "Chelsea" }
+                new Team { TeamName = "Barcelona", TeamDescription = "cool" },
+                new Team { TeamName = "FCflora", TeamDescription = "cool" },
+                new Team { TeamName = "Manchester City", TeamDescription = "cool" },
+                new Team { TeamName = "Manchester United", TeamDescription = "cool" },
+                new Team { TeamName = "Legion", TeamDescription = "cool" },
+                new Team { TeamName = "PSG", TeamDescription = "cool" },
+                new Team { TeamName = "Chelsea", TeamDescription = "cool" }
             };
 
             context.Teams.AddRange(teams);
@@ -99,8 +101,8 @@ namespace KooliProjekt.Data
             // Add sample users
             var users = new List<User>
             {
-                new User { Username = "john_doe", IsAdmin = true },
-                new User { Username = "jane_doe", IsAdmin = false }
+                new User { Username = "john_doe", IsAdmin = true, UserEmail="" },
+                new User { Username = "jane_doe", IsAdmin = false, UserEmail="" }
             };
 
             context.Users.AddRange(users);
@@ -129,14 +131,20 @@ namespace KooliProjekt.Data
                 Team1_predicted_goals = 5,
                 Team2_predicted_goals = 2,
                 PointsEarned = 7,
-                MatchId = matches[0].Id  // Assign a valid MatchId from the database
+                MatchId = matches[0].Id,  // Assign a valid MatchId from the database
+                Points = "five",
+                Name = "public prediction",
+                User = context.Users.First()
             },
             new Prediction
             {
                 Team1_predicted_goals = 6,
                 Team2_predicted_goals = 4,
                 PointsEarned = 10,
-                MatchId = matches[1].Id  // Assign a valid MatchId from the database
+                MatchId = matches[1].Id,  // Assign a valid MatchId from the database
+                Points = "five",
+                Name = "public prediction",
+                User = context.Users.Skip(1).First()
             }
         };
 

@@ -21,7 +21,7 @@ namespace KooliProjekt.Services
 
             if (!string.IsNullOrWhiteSpace(search.Keyword))
             {
-                query = query.Where(team => team.TeamName.Contains(search.Keyword) || team.TeamNumber.Contains(search.Keyword)); ;
+                query = query.Where(team => team.TeamName.Contains(search.Keyword) || team.TeamDescription.Contains(search.Keyword)); ;
             }
 
             return await query.GetPagedAsync(page, pageSize);

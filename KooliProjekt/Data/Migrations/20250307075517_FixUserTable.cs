@@ -108,7 +108,7 @@ namespace KooliProjekt.Data.Migrations
                 column: "Team1Id",
                 principalTable: "Teams",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Matchs_Teams_Team2Id",
@@ -116,7 +116,7 @@ namespace KooliProjekt.Data.Migrations
                 column: "Team2Id",
                 principalTable: "Teams",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Predictions_Users_UserId",
@@ -155,7 +155,7 @@ namespace KooliProjekt.Data.Migrations
                 table: "Tournaments");
 
             migrationBuilder.DropColumn(
-                name: "TeamNumber",
+                name: "TeamDescription",
                 table: "Teams");
 
             migrationBuilder.DropColumn(
