@@ -1,0 +1,59 @@
+﻿    using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Text;
+using System.Threading.Tasks;
+using KooliProjekt.Controllers;
+using KooliProjekt.Data;
+using KooliProjekt.Models;
+using KooliProjekt.Search;
+using KooliProjekt.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using Xunit;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace KooliProjekt.UnitTests.ControllerTests
+{
+    public class UsersControllerTests
+    {
+        private readonly Mock<IUserService> _userServiceMock;
+        private readonly UsersController _controller;
+
+        public UsersControllerTests()
+        {
+
+            _userServiceMock = new Mock<IUserService>();
+            _controller = new UsersController(_userServiceMock.Object);
+        }
+
+        [Fact]
+        public async Task Index_Should_Return_Correct_View_With_Data()
+        {
+            // Arrange
+            int page = 1;
+            var data = new List<User>
+            {
+                new User { Id = 1, Username = "User1", IsAdmin = false },
+                new User { Id = 2, Username = "User2", IsAdmin = true }
+            };
+
+            var pagedResult = new PagedResult<User> { Results = data };
+
+            // Setup mock service to return the paged result
+            _userServiceMock.Setup(x => x.List(page, 5, It.IsAny<UsersSearch>())).ReturnsAsync(pagedResult);
+
+            // Act
+            var result = await _controller.Index(page) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            var model = result.Model as UsersIndexModel;
+            Assert.NotNull(model);
+            Assert.Equal(pagedResult, model.Data);
+        }
+
+    }
+}
