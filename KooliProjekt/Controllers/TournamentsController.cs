@@ -30,65 +30,46 @@ namespace KooliProjekt.Controllers
 
             return View(model);
         }
-        // GET: Tournaments
-
-        // GET: Tournaments/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tournament = _tournamentsService.Get(id.Value);
+            var tournament = await _tournamentsService.Get(id);
             if (tournament == null)
             {
                 return NotFound();
             }
-
             return View(tournament);
         }
 
-        // GET: Tournaments/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tournaments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,TournamentName,StartDate,EndDate")] Tournament tournament)
+        public async Task<IActionResult> Create(Tournament tournament)
         {
             if (ModelState.IsValid)
             {
-                _tournamentsService.Save(tournament);
+                await _tournamentsService.Save(tournament);
                 return RedirectToAction(nameof(Index));
             }
             return View(tournament);
         }
 
-        // GET: Tournaments/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tournament = _tournamentsService.Get(id.Value);
+            var tournament = await _tournamentsService.Get(id);
             if (tournament == null)
             {
                 return NotFound();
             }
-
             return View(tournament);
         }
 
-        // POST: Tournaments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,TournamentName,StartDate,EndDate")] Tournament tournament)
+        public async Task<IActionResult> Edit(int id, Tournament tournament)
         {
             if (id != tournament.Id)
             {
@@ -97,35 +78,27 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                _tournamentsService.Save(tournament);
+                await _tournamentsService.Save(tournament);
                 return RedirectToAction(nameof(Index));
             }
             return View(tournament);
         }
 
-        // GET: Tournaments/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tournament = _tournamentsService.Get(id.Value);
+            var tournament = await _tournamentsService.Get(id);
             if (tournament == null)
             {
                 return NotFound();
             }
-
             return View(tournament);
         }
 
-        // POST: Tournaments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _tournamentsService.Delete(id);
+            await _tournamentsService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
     }

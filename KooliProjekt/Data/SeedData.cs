@@ -132,7 +132,7 @@ namespace KooliProjekt.Data
                 Team2_predicted_goals = 2,
                 PointsEarned = 7,
                 MatchId = matches[0].Id,  // Assign a valid MatchId from the database
-                Points = "five",
+                Points = 5,
                 Name = "public prediction",
                 User = context.Users.First()
             },
@@ -142,7 +142,7 @@ namespace KooliProjekt.Data
                 Team2_predicted_goals = 4,
                 PointsEarned = 10,
                 MatchId = matches[1].Id,  // Assign a valid MatchId from the database
-                Points = "five",
+                Points = 5,
                 Name = "public prediction",
                 User = context.Users.Skip(1).First()
             }

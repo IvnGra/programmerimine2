@@ -30,6 +30,15 @@ namespace KooliProjekt.Controllers
 
             return View(model);
         }
+        public async Task<IActionResult> Details(int id)
+        {
+            var match = await _leaderboardService.Get(id);
+            if (match == null)
+            {
+                return NotFound();
+            }
+            return View(match);
+        }
 
         public IActionResult Create()
         {

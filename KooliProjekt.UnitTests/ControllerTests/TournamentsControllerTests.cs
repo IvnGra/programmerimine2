@@ -52,6 +52,63 @@ namespace KooliProjekt.UnitTests.ControllerTests
             Assert.NotNull(model);
             Assert.Equal(pagedResult, model.Data);
         }
+        [Fact]
+        public async Task Details_should_return_view_with_model_when_tournament_found()
+        {
+            // Arrange
+            int id = 1;
+            var tournament = new Tournament { Id = id, TournamentName = "Tournament 1", StartDate = DateTime.Now.AddMonths(1), EndDate = DateTime.Now.AddMonths(2) };
+            _TournamentServiceMock.Setup(x => x.Get(id)).ReturnsAsync(tournament);
+
+            // Act
+            var result = await _controller.Details(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+            Assert.Equal(tournament, result.Model);  // Assert that the model returned matches the expected tournament
+        }
+
+        [Fact]
+        public async Task Edit_should_return_view_with_model_when_tournament_found()
+        {
+            // Arrange
+            int id = 1;
+            var tournament = new Tournament { Id = id, TournamentName = "Tournament 1", StartDate = DateTime.Now.AddMonths(1), EndDate = DateTime.Now.AddMonths(2) };
+            _TournamentServiceMock.Setup(x => x.Get(id)).ReturnsAsync(tournament);
+
+            // Act
+            var result = await _controller.Edit(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+            Assert.Equal(tournament, result.Model);  // Assert that the model returned matches the expected tournament
+        }
+
+        [Fact]
+        public async Task Delete_should_return_view_with_model_when_tournament_found()
+        {
+            // Arrange
+            int id = 1;
+            var tournament = new Tournament { Id = id, TournamentName = "Tournament 1", StartDate = DateTime.Now.AddMonths(1), EndDate = DateTime.Now.AddMonths(2) };
+            _TournamentServiceMock.Setup(x => x.Get(id)).ReturnsAsync(tournament);
+
+            // Act
+            var result = await _controller.Delete(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+            Assert.Equal(tournament, result.Model);  // Assert that the model returned matches the expected tournament
+        }
+
+        [Fact]
+        public void Create_should_return_view()
+        {
+            // Act
+            var result = _controller.Create() as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+        }
 
     }
 }

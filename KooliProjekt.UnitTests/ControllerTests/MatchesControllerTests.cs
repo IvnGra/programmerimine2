@@ -57,7 +57,65 @@ namespace KooliProjekt.UnitTests.ControllerTests
             Assert.NotNull(model);
             Assert.Equal(pagedResult, model.Data);
         }
+        [Fact]
+        public async Task Details_should_return_view_with_model_when_match_found()
+        {
+            // Arrange
+            int id = 1;
+            var match = new Match { Id = id, Team1_name = "Team 1", Team2_name = "Team 2", Match_time = DateTime.Now };
+            _MatchServiceMock.Setup(x => x.Get(id)).ReturnsAsync(match);
+
+            // Act
+            var result = await _controller.Details(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+            Assert.Equal(match, result.Model);  // Assert that the model returned matches the expected match
+        }
+
+        [Fact]
+        public async Task Edit_should_return_view_with_model_when_match_found()
+        {
+            // Arrange
+            int id = 1;
+            var match = new Match { Id = id, Team1_name = "Team 1", Team2_name = "Team 2", Match_time = DateTime.Now };
+            _MatchServiceMock.Setup(x => x.Get(id)).ReturnsAsync(match);
+
+            // Act
+            var result = await _controller.Edit(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+            Assert.Equal(match, result.Model);  // Assert that the model returned matches the expected match
+        }
+
+        [Fact]
+        public async Task Delete_should_return_view_with_model_when_match_found()
+        {
+            // Arrange
+            int id = 1;
+            var match = new Match { Id = id, Team1_name = "Team 1", Team2_name = "Team 2", Match_time = DateTime.Now };
+            _MatchServiceMock.Setup(x => x.Get(id)).ReturnsAsync(match);
+
+            // Act
+            var result = await _controller.Delete(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+            Assert.Equal(match, result.Model);  // Assert that the model returned matches the expected match
+        }
+
+        [Fact]
+        public void Create_should_return_view()
+        {
+            // Act
+            var result = _controller.Create() as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+        }
     }
 }
+
 
        

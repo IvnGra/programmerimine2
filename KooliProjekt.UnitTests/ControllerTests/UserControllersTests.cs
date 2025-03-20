@@ -56,5 +56,68 @@ namespace KooliProjekt.UnitTests.ControllerTests
             Assert.Equal(pagedResult, model.Data);
         }
 
+        [Fact]
+        public async Task Details_should_return_view_with_model_when_user_found()
+        {
+            // Arrange
+            int id = 1;
+            var user = new User { Id = id, Username = "User 1", UserEmail = "user@email.com", IsAdmin = true };
+            _userServiceMock.Setup(x => x.Get(id)).ReturnsAsync(user);  // Mock the service to return the user
+
+            // Act
+            var result = await _controller.Details(id) as ViewResult;  // Await the result here
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+            Assert.Equal(user, result.Model);  // Assert that the model returned matches the expected user
+        }
+
+        [Fact]
+        public async Task Edit_should_return_view_with_model_when_user_found()
+        {
+            // Arrange
+            int id = 1;
+            var user = new User { Id = id, Username = "User 1", UserEmail = "user@email.com", IsAdmin = true };
+            _userServiceMock.Setup(x => x.Get(id)).ReturnsAsync(user);
+
+            // Act
+            var result = await _controller.Edit(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+
+            // Check if the model returned is the correct user
+            var model = result.Model as User;
+            Assert.NotNull(model);  // Ensure the model is not null
+            Assert.Equal(user, model);  // Assert that the model returned matches the expected user
+        }
+
+
+        [Fact]
+            public async Task Delete_should_return_view_with_model_when_user_found()
+            {
+                // Arrange
+                int id = 1;
+                var user = new User { Id = id, Username = "User 1", UserEmail = "user@email.com", IsAdmin = true };
+                _userServiceMock.Setup(x => x.Get(id)).ReturnsAsync(user);
+
+                // Act
+                var result = await _controller.Delete(id) as ViewResult;
+
+                // Assert
+                Assert.NotNull(result);  // Ensure the result is a ViewResult
+                Assert.Equal(user, result.Model);  // Assert that the model returned matches the expected user
+            }
+
+            [Fact]
+            public void Create_should_return_view()
+            {
+                // Act
+                var result = _controller.Create() as ViewResult;
+
+                // Assert
+                Assert.NotNull(result);  // Ensure the result is a ViewResult
+            }
+
     }
 }

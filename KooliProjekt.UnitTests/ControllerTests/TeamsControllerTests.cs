@@ -54,5 +54,62 @@ namespace KooliProjekt.UnitTests.ControllerTests
             Assert.NotNull(model);
             Assert.Equal(pagedResult, model.Data);
         }
+        [Fact]
+        public async Task Details_should_return_view_with_model_when_team_found()
+        {
+            // Arrange
+            int id = 1;
+            var team = new Team { Id = id, TeamName = "PSG", TeamDescription= "good"};
+            _TeamServiceMock.Setup(x => x.Get(id)).ReturnsAsync(team);
+
+            // Act
+            var result = await _controller.Details(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+            Assert.Equal(team, result.Model);  // Assert that the model returned matches the expected team
+        }
+
+        [Fact]
+        public async Task Edit_should_return_view_with_model_when_team_found()
+        {
+            // Arrange
+            int id = 1;
+            var team = new Team { Id = id, TeamName = "PSG", TeamDescription = "good" };
+            _TeamServiceMock.Setup(x => x.Get(id)).ReturnsAsync(team);
+
+            // Act
+            var result = await _controller.Edit(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+            Assert.Equal(team, result.Model);  // Assert that the model returned matches the expected team
+        }
+
+        [Fact]
+        public async Task Delete_should_return_view_with_model_when_team_found()
+        {
+            // Arrange
+            int id = 1;
+            var team = new Team { Id = id, TeamName = "PSG", TeamDescription = "good" };
+            _TeamServiceMock.Setup(x => x.Get(id)).ReturnsAsync(team);
+
+            // Act
+            var result = await _controller.Delete(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+            Assert.Equal(team, result.Model);  // Assert that the model returned matches the expected team
+        }
+
+        [Fact]
+        public void Create_should_return_view()
+        {
+            // Act
+            var result = _controller.Create() as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);  // Ensure the result is a ViewResult
+        }
     }
 }

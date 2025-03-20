@@ -50,6 +50,65 @@ namespace KooliProjekt.UnitTests.ControllerTests
             var model = result.Model as PredictionsIndexModel;
             Assert.NotNull(model);
             Assert.Equal(pagedResult, model.Data);
-        }   
+        }
+
+            [Fact]
+            public async Task Details_should_return_view_with_model_when_prediction_found()
+            {
+                // Arrange
+                int id = 1;
+                var prediction = new Prediction { Id = id, MatchId = 1, UserId = 1,Points= 10, PointsEarned = 3, Team1_predicted_goals = 3, Team2_predicted_goals = 5 };
+                _PredictionServiceMock.Setup(x => x.Get(id)).ReturnsAsync(prediction);
+
+                // Act
+                var result = await _controller.Details(id) as ViewResult;
+
+                // Assert
+                Assert.NotNull(result);  // Ensure the result is a ViewResult
+                Assert.Equal(prediction, result.Model);  // Assert that the model returned matches the expected prediction
+            }
+
+            [Fact]
+            public async Task Edit_should_return_view_with_model_when_prediction_found()
+            {
+                // Arrange
+                int id = 1;
+                var prediction = new Prediction { Id = id, MatchId = 1, UserId = 1, Points = 10, PointsEarned = 3, Team1_predicted_goals = 3, Team2_predicted_goals = 5 };
+                _PredictionServiceMock.Setup(x => x.Get(id)).ReturnsAsync(prediction);
+
+                // Act
+                var result = await _controller.Edit(id) as ViewResult;
+
+                // Assert
+                Assert.NotNull(result);  // Ensure the result is a ViewResult
+                Assert.Equal(prediction, result.Model);  // Assert that the model returned matches the expected prediction
+            }
+
+            [Fact]
+            public async Task Delete_should_return_view_with_model_when_prediction_found()
+            {
+                // Arrange
+                int id = 1;
+                var prediction = new Prediction { Id = id, MatchId = 1, UserId = 1, Points = 10, PointsEarned = 3, Team1_predicted_goals = 3, Team2_predicted_goals = 5 };
+                _PredictionServiceMock.Setup(x => x.Get(id)).ReturnsAsync(prediction);
+
+                // Act
+                var result = await _controller.Delete(id) as ViewResult;
+
+                // Assert
+                Assert.NotNull(result);  // Ensure the result is a ViewResult
+                Assert.Equal(prediction, result.Model);  // Assert that the model returned matches the expected prediction
+            }
+
+            [Fact]
+            public void Create_should_return_view()
+            {
+                // Act
+                var result = _controller.Create() as ViewResult;
+
+                // Assert
+                Assert.NotNull(result);  // Ensure the result is a ViewResult
+
+            }   
     }
 }

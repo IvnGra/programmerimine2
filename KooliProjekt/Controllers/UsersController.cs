@@ -38,20 +38,15 @@ namespace KooliProjekt.Controllers
         }
 
         // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = _userService.Get(id.Value);
+            var user = await _userService.Get(id);  // Use 'await' here
             if (user == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(user);  // Return the user to the view
         }
 
         // GET: Users/Create
@@ -82,8 +77,7 @@ namespace KooliProjekt.Controllers
             {
                 return NotFound();
             }
-
-            var user = _userService.Get(id.Value);
+            var user = await _userService.Get(id.Value);
             if (user == null)
             {
                 return NotFound();
@@ -91,12 +85,13 @@ namespace KooliProjekt.Controllers
             return View(user);
         }
 
+
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,IsAdmin")] User user)
+        public async Task<IActionResult> Edit(int id,User user)
         {
             if (id != user.Id)
             {

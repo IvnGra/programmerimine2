@@ -50,6 +50,62 @@ namespace KooliProjekt.UnitTests.ControllerTests
             Assert.NotNull(model);
             Assert.Equal(pagedResult, model.Data);
         }
-    }
-}
+        [Fact]
+        public async Task Details_should_return_view_with_model_when_leaderboard_found()
+        {
+                // Arrange
+                int id = 1;
+                var leaderboard = new Leaderboard { Id = id, Name = "Team 1", Score = 30};
+                _LeaderboardServiceMock.Setup(x => x.Get(id)).ReturnsAsync(leaderboard);
 
+                // Act
+                var result = await _controller.Details(id) as ViewResult;
+
+                // Assert
+                Assert.NotNull(result);  // Ensure the result is a ViewResult
+                Assert.Equal(leaderboard, result.Model);  // Assert that the model returned matches the expected leaderboard
+        }
+
+        [Fact]
+        public async Task Edit_should_return_view_with_model_when_leaderboard_found()
+            {
+                // Arrange
+                int id = 1;
+                var leaderboard = new Leaderboard { Id = id, Name = "Team 1", Score = 30 };
+                _LeaderboardServiceMock.Setup(x => x.Get(id)).ReturnsAsync(leaderboard);
+
+                // Act
+                var result = await _controller.Edit(id) as ViewResult;
+
+                // Assert
+                Assert.NotNull(result);  // Ensure the result is a ViewResult
+                Assert.Equal(leaderboard, result.Model);  // Assert that the model returned matches the expected leaderboard
+            }
+
+        [Fact]
+        public async Task Delete_should_return_view_with_model_when_leaderboard_found()
+            {
+                // Arrange
+                int id = 1;
+                var leaderboard = new Leaderboard { Id = id, Name = "Team 1", Score = 30 };
+                _LeaderboardServiceMock.Setup(x => x.Get(id)).ReturnsAsync(leaderboard);
+
+                // Act
+                var result = await _controller.Delete(id) as ViewResult;
+
+                // Assert
+                Assert.NotNull(result);  // Ensure the result is a ViewResult
+                Assert.Equal(leaderboard, result.Model);  // Assert that the model returned matches the expected leaderboard
+            }
+
+        [Fact]
+        public void Create_should_return_view()
+            {
+                // Act
+                var result = _controller.Create() as ViewResult;
+
+                // Assert
+                Assert.NotNull(result);  // Ensure the result is a ViewResult
+            }
+        }
+    }

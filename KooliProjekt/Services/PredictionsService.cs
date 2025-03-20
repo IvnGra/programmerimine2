@@ -21,7 +21,7 @@ namespace KooliProjekt.Services
 
             if (!string.IsNullOrWhiteSpace(search.Keyword))
             {
-                query = query.Where(prediction => prediction.Name.Contains(search.Keyword) || prediction.Points.Contains(search.Keyword)); ;
+                query = query.Where(prediction => prediction.Name.Contains(search.Keyword) || prediction.Description.Contains(search.Keyword)); ;
             }
 
             return await query.GetPagedAsync(page, pageSize);
