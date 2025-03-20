@@ -39,7 +39,8 @@ namespace KooliProjekt.UnitTests.ControllerTests
                 new Team { Id = 2, TeamName = "Team B" }
             };
 
-            var pagedResult = new PagedResult<Team> { Results = data };
+            var pagedResult = new KooliProjekt.Data.PagedResult<Team> { Results = data };
+
 
 
             _TeamServiceMock.Setup(x => x.List(page, 5, It.IsAny<TeamsSearch>())).ReturnsAsync(pagedResult);
@@ -51,7 +52,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
             Assert.NotNull(result);
             var model = result.Model as TeamsIndexModel;
             Assert.NotNull(model);
-            Assert.Equal(pagedResult, result.Model);
+            Assert.Equal(pagedResult, model.Data);
         }
     }
 }

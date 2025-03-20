@@ -43,7 +43,8 @@ namespace KooliProjekt.UnitTests.ControllerTests
                 new Match { Id = 2, Round = "Round 2" }
             };
 
-            var pagedResult = new PagedResult<Match> { Results = data };
+            var pagedResult = new KooliProjekt.Data.PagedResult<Match> { Results = data };
+
 
             _MatchServiceMock.Setup(x => x.List(page, 5, It.IsAny<MatchesSearch>())).ReturnsAsync(pagedResult);
 

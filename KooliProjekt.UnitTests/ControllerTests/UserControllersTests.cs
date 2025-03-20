@@ -40,7 +40,8 @@ namespace KooliProjekt.UnitTests.ControllerTests
                 new User { Id = 2, Username = "User2", IsAdmin = true }
             };
 
-            var pagedResult = new PagedResult<User> { Results = data };
+            var pagedResult = new KooliProjekt.Data.PagedResult<User> { Results = data };
+
 
             // Setup mock service to return the paged result
             _userServiceMock.Setup(x => x.List(page, 5, It.IsAny<UsersSearch>())).ReturnsAsync(pagedResult);
