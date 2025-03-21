@@ -39,8 +39,8 @@ namespace KooliProjekt.UnitTests.ControllerTests
             int page = 1;
             var data = new List<Match>
             {
-                new Match { Id = 1, Round = "Round 1" },
-                new Match { Id = 2, Round = "Round 2" }
+                new Match { Id = 1, Round = 1 },
+                new Match { Id = 2, Round = 2 }
             };
 
             var pagedResult = new KooliProjekt.Data.PagedResult<Match> { Results = data };
@@ -114,6 +114,79 @@ namespace KooliProjekt.UnitTests.ControllerTests
             // Assert
             Assert.NotNull(result);  // Ensure the result is a ViewResult
         }
+        [Fact]
+        public async Task Create_should_return_view_when_model_is_invalid()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("Name", "Name is required");
+
+            // Act
+            var result = await _controller.Create(new Match()) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(!_controller.ModelState.IsValid);
+        }
+
+        [Fact]
+        public async Task Create_should_redirect_to_index_when_model_is_valid()
+        {
+            // Arrange
+            var newMatch = new Match { Name = "Match 1", Team1_name = "Barcelona", Team2_name = "PSG", Round = 6 };
+            _MatchServiceMock.Setup(x => x.Create(It.IsAny<Match>())).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.Create(newMatch) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+        }
+
+        [Fact]
+        public async Task Edit_should_return_not_found_when_match_does_not_exist()
+        {
+            // Arrange
+            int id = 999;
+            _MatchServiceMock.Setup(x => x.Get(id)).ReturnsAsync((Match)null);
+
+            // Act
+            var result = await _controller.Edit(id);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task Delete_should_redirect_to_index_when_match_deleted()
+        {
+            // Arrange
+            int id = 1;
+            var match = new Match { Id = id, Name = "Match 1",Team1_name = "Barcelona", Team2_name = "PSG", Round = 6 };
+            _MatchServiceMock.Setup(x => x.Delete(id)).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.DeleteConfirmed(id) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+        }
+
+        [Fact]
+        public async Task Delete_should_return_not_found_when_match_not_found()
+        {
+            // Arrange
+            int id = 999;
+            _MatchServiceMock.Setup(x => x.Get(id)).ReturnsAsync((Match)null);
+
+            // Act
+            var result = await _controller.Delete(id);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
     }
 }
 

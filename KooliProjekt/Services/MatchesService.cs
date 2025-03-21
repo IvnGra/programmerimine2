@@ -13,6 +13,11 @@ namespace KooliProjekt.Services
         {
             _context = context;
         }
+        public async Task Create(Match match)
+        {
+            _context.Matchs.Add(match);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task<PagedResult<Match>> List(int page, int pageSize, MatchesSearch search = null)
         {
@@ -22,7 +27,7 @@ namespace KooliProjekt.Services
 
             if (!string.IsNullOrWhiteSpace(search.Keyword))
             {
-                query = query.Where(match => match.Name.Contains(search.Keyword) || match.Round.Contains(search.Keyword));;
+                query = query.Where(match => match.Name.Contains(search.Keyword) || match.Description.Contains(search.Keyword));;
             }
 
             return await query.GetPagedAsync(page, pageSize);

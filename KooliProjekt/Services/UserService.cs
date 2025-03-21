@@ -3,6 +3,7 @@ using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace KooliProjekt.Services
 {

@@ -111,5 +111,78 @@ namespace KooliProjekt.UnitTests.ControllerTests
             // Assert
             Assert.NotNull(result);  // Ensure the result is a ViewResult
         }
+        [Fact]
+        public async Task Create_should_return_view_when_model_is_invalid()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("Name", "Name is required");
+
+            // Act
+            var result = await _controller.Create(new Team()) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(!_controller.ModelState.IsValid);
+        }
+
+        [Fact]
+        public async Task Create_should_redirect_to_index_when_model_is_valid()
+        {
+            // Arrange
+            var newTeam = new Team { TeamName = "PSG", Team1 = "Team1", Team2 = "Team2" };
+            _TeamServiceMock.Setup(x => x.Create(It.IsAny<Team>())).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.Create(newTeam) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+        }
+
+        [Fact]
+        public async Task Edit_should_return_not_found_when_team_does_not_exist()
+        {
+            // Arrange
+            int id = 999;
+            _TeamServiceMock.Setup(x => x.Get(id)).ReturnsAsync((Team)null);
+
+            // Act
+            var result = await _controller.Edit(id);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task Delete_should_redirect_to_index_when_team_deleted()
+        {
+            // Arrange
+            int id = 1;
+            var team = new Team { Id = id, TeamName = "PSG", Team1= "Team1", Team2 = "Team2" };
+            _TeamServiceMock.Setup(x => x.Delete(id)).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.DeleteConfirmed(id) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+        }
+
+        [Fact]
+        public async Task Delete_should_return_not_found_when_team_not_found()
+        {
+            // Arrange
+            int id = 999;
+            _TeamServiceMock.Setup(x => x.Get(id)).ReturnsAsync((Team)null);
+
+            // Act
+            var result = await _controller.Delete(id);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
     }
 }

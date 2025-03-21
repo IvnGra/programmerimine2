@@ -1,6 +1,7 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace KooliProjekt.Services
 {
@@ -11,6 +12,12 @@ namespace KooliProjekt.Services
         public LeaderboardService(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task Create(Leaderboard leaderboard)
+        {
+            _context.Leaderboards.Add(leaderboard);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<PagedResult<Leaderboard>> List(int page, int pageSize, LeaderboardsSearch search = null)

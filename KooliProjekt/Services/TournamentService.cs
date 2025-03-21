@@ -3,6 +3,7 @@ using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace KooliProjekt.Services
 {
@@ -13,6 +14,12 @@ namespace KooliProjekt.Services
         public TournamentService(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task Create(Tournament tournament)
+        {
+            _context.Tournaments.Add(tournament);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<PagedResult<Tournament>> List(int page, int pageSize, TournamentsSearch search = null)

@@ -24,8 +24,9 @@ namespace KooliProjekt.Data
         public string Team2_name { get; set; } 
 
         public DateTime Match_time { get; set; } = DateTime.Now;
-        public string? Round { get; set; }
+        public int Round { get; set; }
         public int Team1_goals { get; set; }
         public int Team2_goals { get; set; }
+        public string Description { get; set; }
     }
 }

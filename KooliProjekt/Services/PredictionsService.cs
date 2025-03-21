@@ -1,6 +1,7 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace KooliProjekt.Services
 {
@@ -11,6 +12,11 @@ namespace KooliProjekt.Services
         public PredictionsService(ApplicationDbContext context)
         {
             _context = context;
+        }
+        public async Task Create(Prediction prediction)
+        {
+            _context.Predictions.Add(prediction);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<PagedResult<Prediction>> List(int page, int pageSize, PredictionsSearch search = null)

@@ -107,5 +107,78 @@ namespace KooliProjekt.UnitTests.ControllerTests
                 // Assert
                 Assert.NotNull(result);  // Ensure the result is a ViewResult
             }
+        [Fact]
+        public async Task Create_should_return_view_when_model_is_invalid()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("Name", "Name is required");
+
+            // Act
+            var result = await _controller.Create(new Leaderboard()) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(!_controller.ModelState.IsValid);
         }
+
+        [Fact]
+        public async Task Create_should_redirect_to_index_when_model_is_valid()
+        {
+            // Arrange
+            var newLeaderboard = new Leaderboard { Name = "New Leaderboard", place = "pärnu mnt18", Score = 52 };
+            _LeaderboardServiceMock.Setup(x => x.Create(It.IsAny<Leaderboard>())).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.Create(newLeaderboard) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+        }
+
+        [Fact]
+        public async Task Edit_should_return_not_found_when_leaderboard_does_not_exist()
+        {
+            // Arrange
+            int id = 999;
+            _LeaderboardServiceMock.Setup(x => x.Get(id)).ReturnsAsync((Leaderboard)null);
+
+            // Act
+            var result = await _controller.Edit(id);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task Delete_should_redirect_to_index_when_leaderboard_deleted()
+        {
+            // Arrange
+            int id = 1;
+            var leaderboard = new Leaderboard { Name = "New Leaderboard", place = "pärnu mnt18", Score = 52 };
+            _LeaderboardServiceMock.Setup(x => x.Delete(id)).Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.DeleteConfirmed(id) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+        }
+
+        [Fact]
+        public async Task Delete_should_return_not_found_when_leaderboard_not_found()
+        {
+            // Arrange
+            int id = 999;
+            _LeaderboardServiceMock.Setup(x => x.Get(id)).ReturnsAsync((Leaderboard)null);
+
+            // Act
+            var result = await _controller.Delete(id);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
     }
+}

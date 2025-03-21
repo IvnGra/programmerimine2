@@ -1,6 +1,7 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace KooliProjekt.Services
 {
@@ -11,6 +12,12 @@ namespace KooliProjekt.Services
         public TeamService(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task Create(Team team)
+        {
+            _context.Teams.Add(team);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<PagedResult<Team>> List(int page, int pageSize, TeamsSearch search = null)
