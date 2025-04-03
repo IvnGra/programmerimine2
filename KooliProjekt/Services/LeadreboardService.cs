@@ -28,7 +28,7 @@ namespace KooliProjekt.Services
 
             if (!string.IsNullOrWhiteSpace(search.Keyword))
             {
-                query = query.Where(leaderboard => leaderboard.Name.Contains(search.Keyword) || leaderboard.place.Contains(search.Keyword)); ;
+                query = query.Where(leaderboard => leaderboard.Name.Contains(search.Keyword) || leaderboard.Place.Contains(search.Keyword)); ;
             }
 
             return await query.GetPagedAsync(page, pageSize);

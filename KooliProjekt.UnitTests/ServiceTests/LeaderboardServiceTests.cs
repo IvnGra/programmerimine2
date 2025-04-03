@@ -24,7 +24,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             {
                 Name = "Test Player",
                 Score = 1000,
-                place = "Tartu mnt69",
+                Place = "Tartu",
             };
 
             // Act
@@ -41,12 +41,12 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task List_ShouldReturnPagedLeaderboard()
         {
             // Arrange
-            var Leaderboard1 = new Leaderboard { Name = "Player 1", Score = 1200 };
-            var Leaderboard2 = new Leaderboard { Name = "Player 2", Score = 800 };
+            var Leaderboard1 = new Leaderboard { Name = "Player 1", Score = 1200, Place= "Pärnu" };
+            var Leaderboard2 = new Leaderboard { Name = "Player 2", Score = 800 , Place = "Narva" };
             await _leaderboardService.Create(Leaderboard1);
             await _leaderboardService.Create(Leaderboard2);
 
-            var search = new LeaderboardsSearch { Keyword = "Leaderboard" };
+            var search = new LeaderboardsSearch { Keyword = "Player" };
 
             // Act
             var result = await _leaderboardService.List(1, 10, search);
@@ -60,7 +60,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task Get_ShouldReturnLeaderboardById()
         {
             // Arrange
-            var leaderboard = new Leaderboard { Name = "Test Player", Score = 1000 };
+            var leaderboard = new Leaderboard { Name = "Test Player", Score = 1000, Place = "Pärnu" };
             await _leaderboardService.Create(leaderboard);
 
             // Act
@@ -77,11 +77,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task Save_ShouldUpdateLeaderboard()
         {
             // Arrange
-            var leaderboard = new Leaderboard 
-            { Name = "Initial Player"
-            , Score = 500 
-            };
-
+            var leaderboard = new Leaderboard { Name = "Test Player", Score = 1000, Place = "Pärnu" };
             await _leaderboardService.Create(leaderboard);
 
             // Act
@@ -100,7 +96,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task Delete_ShouldRemoveLeaderboard()
         {
             // Arrange
-            var leaderboard = new Leaderboard { Name = "Test Player", Score = 1000 };
+            var leaderboard = new Leaderboard { Name = "Test Player", Score = 1000, Place = "Keila" };
             await _leaderboardService.Create(leaderboard);
 
             // Act

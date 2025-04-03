@@ -19,6 +19,6 @@ namespace KooliProjekt.Data
         public int Total_id { get; set; }
         public string? Name { get; set; }
         public int Score { get; set; }
-        public string place {  get; set; }
+        public string Place { get; set; }
     }
 }

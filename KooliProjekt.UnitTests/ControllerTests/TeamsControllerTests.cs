@@ -129,7 +129,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public async Task Create_should_redirect_to_index_when_model_is_valid()
         {
             // Arrange
-            var newTeam = new Team { TeamName = "PSG", Team1 = "Team1", Team2 = "Team2" };
+            var newTeam = new Team { TeamName = "PSG" };
             _TeamServiceMock.Setup(x => x.Create(It.IsAny<Team>())).Returns(Task.CompletedTask);
 
             // Act
@@ -159,7 +159,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         {
             // Arrange
             int id = 1;
-            var team = new Team { Id = id, TeamName = "PSG", Team1= "Team1", Team2 = "Team2" };
+            var team = new Team { Id = id, TeamName = "PSG" };
             _TeamServiceMock.Setup(x => x.Delete(id)).Returns(Task.CompletedTask);
 
             // Act

@@ -13,5 +13,7 @@ namespace KooliProjekt.Data
 
         public DateTime StartDate { get; set; } = DateTime.Now; // Use clearer naming
         public DateTime EndDate { get; set; } = DateTime.Now; // Use clearer naming
-    }
+        public string Location { get; set; }
+        public int Year { get; set; }
+     }
 }

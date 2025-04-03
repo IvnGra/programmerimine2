@@ -62,7 +62,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         {
             // Arrange
             int id = 1;
-            var match = new Match { Id = id, Team1_name = "Team 1", Team2_name = "Team 2", Match_time = DateTime.Now };
+            var match = new Match { Id = id, Match_time = DateTime.Now };
             _MatchServiceMock.Setup(x => x.Get(id)).ReturnsAsync(match);
 
             // Act
@@ -78,7 +78,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         {
             // Arrange
             int id = 1;
-            var match = new Match { Id = id, Team1_name = "Team 1", Team2_name = "Team 2", Match_time = DateTime.Now };
+            var match = new Match { Id = id, Match_time = DateTime.Now };
             _MatchServiceMock.Setup(x => x.Get(id)).ReturnsAsync(match);
 
             // Act
@@ -94,7 +94,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         {
             // Arrange
             int id = 1;
-            var match = new Match { Id = id, Team1_name = "Team 1", Team2_name = "Team 2", Match_time = DateTime.Now };
+            var match = new Match { Id = id, Match_time = DateTime.Now };
             _MatchServiceMock.Setup(x => x.Get(id)).ReturnsAsync(match);
 
             // Act
@@ -132,7 +132,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public async Task Create_should_redirect_to_index_when_model_is_valid()
         {
             // Arrange
-            var newMatch = new Match { Name = "Match 1", Team1_name = "Barcelona", Team2_name = "PSG", Round = 6 };
+            var newMatch = new Match { Name = "Match 1", Round = 6 };
             _MatchServiceMock.Setup(x => x.Create(It.IsAny<Match>())).Returns(Task.CompletedTask);
 
             // Act
@@ -162,7 +162,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         {
             // Arrange
             int id = 1;
-            var match = new Match { Id = id, Name = "Match 1",Team1_name = "Barcelona", Team2_name = "PSG", Round = 6 };
+            var match = new Match { Id = id, Name = "Match 1", Round = 6 };
             _MatchServiceMock.Setup(x => x.Delete(id)).Returns(Task.CompletedTask);
 
             // Act

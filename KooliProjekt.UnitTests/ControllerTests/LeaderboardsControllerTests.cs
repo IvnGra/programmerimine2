@@ -125,7 +125,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public async Task Create_should_redirect_to_index_when_model_is_valid()
         {
             // Arrange
-            var newLeaderboard = new Leaderboard { Name = "New Leaderboard", place = "pärnu mnt18", Score = 52 };
+            var newLeaderboard = new Leaderboard { Name = "New Leaderboard", Place = "pärnu mnt18", Score = 52 };
             _LeaderboardServiceMock.Setup(x => x.Create(It.IsAny<Leaderboard>())).Returns(Task.CompletedTask);
 
             // Act
@@ -155,7 +155,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         {
             // Arrange
             int id = 1;
-            var leaderboard = new Leaderboard { Name = "New Leaderboard", place = "pärnu mnt18", Score = 52 };
+            var leaderboard = new Leaderboard { Name = "New Leaderboard", Place = "pärnu mnt18", Score = 52 };
             _LeaderboardServiceMock.Setup(x => x.Delete(id)).Returns(Task.CompletedTask);
 
             // Act

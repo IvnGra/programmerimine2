@@ -23,8 +23,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             var team = new Team
             {
                 TeamName = "Team Alpha",
-                Team1 = "Barcelona",
-                Team2 = "PSG"
+                TeamDescription = "algajad"
             };
 
             // Act
@@ -34,16 +33,14 @@ namespace KooliProjekt.UnitTests.ServiceTests
             var result = await _teamService.Get(team.Id);
             Assert.NotNull(result);
             Assert.Equal(team.TeamName, result.TeamName);
-            Assert.Equal(team.Team1, result.Team1);
-            Assert.Equal(team.Team2, result.Team2);
         }
 
         [Fact]
         public async Task List_ShouldReturnPagedTeams()
         {
             // Arrange
-            var team1 = new Team { TeamName = "Team Alpha", Team1 = "Barcelona", Team2 = "PSG" };
-            var team2 = new Team { TeamName = "Team Beta", Team1 = "Barcelona", Team2 = "PSG" };
+            var team1 = new Team { TeamName = "Team Alpha", TeamDescription = "algajad" };
+            var team2 = new Team { TeamName = "Team Beta", TeamDescription = "Proffid" };
             await _teamService.Create(team1);
             await _teamService.Create(team2);
 
@@ -61,7 +58,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task Get_ShouldReturnTeamById()
         {
             // Arrange
-            var team = new Team { Name = "Team Alpha", Coach = "Coach A", Country = "Country X" };
+            var team = new Team { TeamName = "Team Alpha", TeamDescription = "algajad" };
             await _teamService.Create(team);
 
             // Act
@@ -70,9 +67,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Assert
             Assert.NotNull(result);
             Assert.Equal(team.Id, result.Id);
-            Assert.Equal("Team Alpha", result.Name);
-            Assert.Equal("Coach A", result.Coach);
-            Assert.Equal("Country X", result.Country);
+            Assert.Equal("Team Alpha", result.TeamName);
         }
 
         [Fact]
@@ -81,29 +76,27 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Arrange
             var team = new Team
             {
-                Name = "Team Alpha",
-                Coach = "Coach A",
-                Country = "Country X"
+                TeamName = "Team Alpha",
+                TeamDescription = "algajad"
+
             };
             await _teamService.Create(team);
 
             // Act
-            team.Name = "Team Gamma";
-            team.Coach = "Coach C";
+            team.TeamName = "Team Gamma";
             await _teamService.Save(team);
 
             // Assert
             var updatedTeam = await _teamService.Get(team.Id);
             Assert.NotNull(updatedTeam);
-            Assert.Equal("Team Gamma", updatedTeam.Name);
-            Assert.Equal("Coach C", updatedTeam.Coach);
+            Assert.Equal("Team Gamma", updatedTeam.TeamName);
         }
 
         [Fact]
         public async Task Delete_ShouldRemoveTeam()
         {
             // Arrange
-            var team = new Team { Name = "Team Alpha", Coach = "Coach A", Country = "Country X" };
+            var team = new Team { TeamName = "Team Alpha", TeamDescription = "Proffid"};
             await _teamService.Create(team);
 
             // Act

@@ -45,12 +45,12 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task List_ShouldReturnPagedPredictions()
         {
             // Arrange
-            var prediction1 = new Prediction { Name = "Football Match1", Team1_predicted_goals = 2, Team2_predicted_goals = 1 };
-            var prediction2 = new Prediction { Name = "Football Match2", Team1_predicted_goals = 3, Team2_predicted_goals = 2 };
+            var prediction1 = new Prediction { Name = "Football Match1", Team1_predicted_goals = 2, Team2_predicted_goals = 1,Description = "Jalgpalli turniir" };
+            var prediction2 = new Prediction { Name = "Football Match2", Team1_predicted_goals = 3, Team2_predicted_goals = 2,Description = "Jalgpalli turniir"};
             await _predictionService.Create(prediction1);
             await _predictionService.Create(prediction2);
 
-            var search = new PredictionsSearch { Keyword = "Prediction" };
+            var search = new PredictionsSearch { Keyword = "Football" };
 
             // Act
             var result = await _predictionService.List(1, 10, search);
@@ -64,7 +64,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task Get_ShouldReturnPredictionById()
         {
             // Arrange
-            var prediction = new Prediction { Name = "Football Match", Team1_predicted_goals = 2, Team2_predicted_goals = 1 };
+            var prediction = new Prediction { Name = "Football Match", Team1_predicted_goals = 2, Team2_predicted_goals = 1, Description = "Jalgpalli turniir" };
             await _predictionService.Create(prediction);
 
             // Act
@@ -107,7 +107,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task Delete_ShouldRemovePrediction()
         {
             // Arrange
-            var prediction = new Prediction { Name = "Football Match", Team1_predicted_goals = 2, Team2_predicted_goals = 1 };
+            var prediction = new Prediction { Name = "Football Match", Team1_predicted_goals = 2, Team2_predicted_goals = 1, Description = "Jalgpalli Turniir" };
             await _predictionService.Create(prediction);
 
             // Act

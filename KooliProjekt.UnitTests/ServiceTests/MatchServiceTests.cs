@@ -22,8 +22,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Arrange
             var match = new Match
             {
-                Team1_name = "Team Alpha",
-                Team2_name = "Team Beta",
+                Description = "Jalgpalli turniir",
                 Team1_goals = 2,
                 Team2_goals = 1,
                 Name = "Football Match"
@@ -35,8 +34,8 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Assert
             var result = await _matchesService.Get(match.Id);
             Assert.NotNull(result);
-            Assert.Equal(match.Team1_name, result.Team1_name);
-            Assert.Equal(match.Team2_name, result.Team2_name);
+            Assert.Equal(match.Team1, result.Team1);
+            Assert.Equal(match.Team2, result.Team2);
             Assert.Equal(match.Team1_goals, result.Team1_goals);
             Assert.Equal(match.Team2_goals, result.Team2_goals);
         }
@@ -45,26 +44,30 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task List_ShouldReturnPagedMatches()
         {
             // Arrange
-            var match1 = new Match { Team1_name = "Team Alpha", Team2_name = "Team Beta", Team1_goals = 2, Team2_goals = 1 };
-            var match2 = new Match { Team1_name = "Team Gamma", Team2_name = "Team Delta", Team1_goals = 3, Team2_goals = 2 };
+            var team1 = new Team { TeamName = "teamname 1", TeamDescription = "algajad" };
+            var team2 = new Team { TeamName = "teamname 2", TeamDescription = "proffid" };
+            var match1 = new Match { Team1 = team1, Team2 = team2, Name = "Legion", Description = "Jalgpalli turniir"};
+            var match2 = new Match { Team1 = team2, Team2 = team1, Name = "Friendly", Description = "Jalgapalli turniir"};
+
             await _matchesService.Create(match1);
             await _matchesService.Create(match2);
 
-            var search = new MatchesSearch { Keyword = "Match" };
-
-            // Act
+            // Act: Search for team names
+            var search = new MatchesSearch { Keyword = "turniir" };
             var result = await _matchesService.List(1, 10, search);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(2, result.Results.Count);
+            Assert.Equal(2, result.Results.Count);  // Now passes if List() searches Team.TeamName
         }
 
         [Fact]
         public async Task Get_ShouldReturnMatchById()
         {
             // Arrange
-            var match = new Match { Team1_name = "Team Alpha", Team2_name = "Team Beta", Team1_goals = 2, Team2_goals = 1 };
+            var team1 = new Team { TeamName = "Team Alpha" ,TeamDescription = "algajad" };
+            var team2 = new Team { TeamName = "Team Beta", TeamDescription = "proffid"};
+            var match = new Match { Team1 = team1, Team2 = team2, Team1_goals = 2, Team2_goals = 1, Name = "FCkalju", Description = "Jalgpalli turniir" };
             await _matchesService.Create(match);
 
             // Act
@@ -73,8 +76,8 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Assert
             Assert.NotNull(result);
             Assert.Equal(match.Id, result.Id);
-            Assert.Equal("Team Alpha", result.Team1_name);
-            Assert.Equal("Team Beta", result.Team2_name);
+            Assert.Equal(match.Team1, result.Team1);
+            Assert.Equal(match.Team2, result.Team2);
             Assert.Equal(2, result.Team1_goals);
             Assert.Equal(1, result.Team2_goals);
         }
@@ -83,14 +86,9 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task Save_ShouldUpdateMatch()
         {
             // Arrange
-            var match = new Match
-            {
-                Team1_name = "Team Alpha",
-                Team2_name = "Team Beta",
-                Team1_goals = 2,
-                Team2_goals = 1,
-                Name = "Football Match"
-            };
+            var team1 = new Team { TeamName = "Team Alpha", TeamDescription = "algajad" };
+            var team2 = new Team { TeamName = "Team Beta" , TeamDescription = "proffid" };
+            var match = new Match { Team1 = team1, Team2 = team2, Team1_goals = 2, Team2_goals = 1, Name = "Legion", Description = "Jalgpalli turniir" };
             await _matchesService.Create(match);
 
             // Act
@@ -109,7 +107,9 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task Delete_ShouldRemoveMatch()
         {
             // Arrange
-            var match = new Match { Team1_name = "Team Alpha", Team2_name = "Team Beta", Team1_goals = 2, Team2_goals = 1 };
+            var team1 = new Team { TeamName = "Team Alpha", TeamDescription = "algajad" };
+            var team2 = new Team { TeamName = "Team Beta" , TeamDescription = "proffid"};
+            var match = new Match { Team1 = team1, Team2 = team2, Team1_goals = 2, Team2_goals = 1, Name = "FCkalju", Description = "Jalgpalli turniir" };
             await _matchesService.Create(match);
 
             // Act

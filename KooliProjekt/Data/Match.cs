@@ -17,11 +17,11 @@ namespace KooliProjekt.Data
 
         public int Team1Id { get; set; }
         
-        public string Team1_name { get; set; }
+        public Team Team1 { get; set; }
 
         public int Team2Id { get; set; }
         
-        public string Team2_name { get; set; } 
+        public Team Team2 { get; set; } 
 
         public DateTime Match_time { get; set; } = DateTime.Now;
         public int Round { get; set; }
