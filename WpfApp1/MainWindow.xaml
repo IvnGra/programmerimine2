@@ -7,6 +7,15 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid>
+            <Button Content="Show XAML.cs Content" Width="200" Height="40"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                Click="ShowCode_Click"/>
 
+            <TextBox x:Name="CodeViewer" Margin="10,50,10,10" 
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 AcceptsReturn="True" TextWrapping="Wrap" 
+                 IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
+        </Grid>
     </Grid>
 </Window>
