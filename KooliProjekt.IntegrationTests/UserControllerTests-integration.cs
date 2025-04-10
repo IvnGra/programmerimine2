@@ -12,12 +12,12 @@ using System;
 namespace KooliProjekt.IntegrationTests
 {
     [Collection("Sequential")]
-    public class UsersControllerTests : TestBase
+    public class UsersControllerPostTests : TestBase
     {
         private readonly HttpClient _client;
         private readonly ApplicationDbContext _context;
 
-        public UsersControllerTests()
+        public UsersControllerPostTests()
         {
             var options = new WebApplicationFactoryClientOptions
             {
@@ -33,10 +33,9 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
             var formValues = new Dictionary<string, string>
             {
-                { "Email", "testuser@example.com" },
-                { "Name", "Test User" },
-                { "Password", "Password123" },
-                { "Registration_Time", "2025-03-27" }
+                { "UserEmail", "testuser@example.com" },
+                { "UserName", "Test User" },
+                { "isAdmin", "true" }
             };
 
             using var content = new FormUrlEncodedContent(formValues);
@@ -47,12 +46,10 @@ namespace KooliProjekt.IntegrationTests
             // Assert
             if (response.StatusCode == HttpStatusCode.Redirect)
             {
-                var user = _context.Users.FirstOrDefault(u => u.Email == "testuser@example.com");
+                var user = _context.Users.FirstOrDefault(u => u.UserEmail == "testuser@example.com");
                 Assert.NotNull(user);
-                Assert.Equal("testuser@example.com", user.Email);
-                Assert.Equal("Test User", user.Name);
-                Assert.Equal("Password123", user.Password);
-                Assert.Equal(new DateTime(2025, 03, 27), user.Registration_Time);
+                Assert.Equal("testuser@example.com", user.UserEmail);
+                Assert.Equal("User", user.Username);
             }
             else
             {
@@ -66,10 +63,9 @@ namespace KooliProjekt.IntegrationTests
         {
             // Arrange
             var formValues = new Dictionary<string, string>();
-            formValues.Add("Email", "");
-            formValues.Add("Name", "");
-            formValues.Add("Password", "");
-            formValues.Add("Registration_Time", "");
+            formValues.Add("UserEmail", "");
+            formValues.Add("UserName", "");
+            formValues.Add("isAdmin", "");
 
             using var content = new FormUrlEncodedContent(formValues);
 

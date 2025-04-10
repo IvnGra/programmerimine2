@@ -10,12 +10,12 @@ using static NuGet.Packaging.PackagingConstants;
 namespace KooliProjekt.IntegrationTests
 {
     [Collection("Sequential")]
-    public class PredictionControllerTests : TestBase
+    public class PredictionControllerGetTests : TestBase
     {
         private readonly HttpClient _client;
         private readonly ApplicationDbContext _context;
 
-        public PredictionControllerTests()
+        public PredictionControllerGetTests()
         {
             _client = Factory.CreateClient();
             _context = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));

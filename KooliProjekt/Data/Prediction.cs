@@ -22,5 +22,6 @@ namespace KooliProjekt.Data
         public int Points { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        
     }
 }

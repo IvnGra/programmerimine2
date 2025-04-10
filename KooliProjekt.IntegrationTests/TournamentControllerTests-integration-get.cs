@@ -10,12 +10,12 @@ using static NuGet.Packaging.PackagingConstants;
 namespace KooliProjekt.IntegrationTests
 {
     [Collection("Sequential")]
-    public class TournamentControllerTests : TestBase
+    public class TournamentControllerGetTests : TestBase
     {
         private readonly HttpClient _client;
         private readonly ApplicationDbContext _context;
 
-        public TournamentControllerTests()
+        public TournamentControllerGetTests()
         {
             _client = Factory.CreateClient();
             _context = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
