@@ -1,6 +1,12 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Json;
-using KooliProjekt.Data;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Threading.Tasks;
+
 
 namespace WpfApp1.Api
 {
@@ -17,8 +23,11 @@ namespace WpfApp1.Api
         public async Task<List<User>> List()
         {
             var result = await _httpClient.GetFromJsonAsync<List<User>>("Users");
+
             return result;
         }
+
+
 
         public async Task Save(User list)
         {

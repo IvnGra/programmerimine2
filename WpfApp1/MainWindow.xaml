@@ -3,19 +3,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Grid>
-            <Button Content="Show XAML.cs Content" Width="200" Height="40"
-                HorizontalAlignment="Left" VerticalAlignment="Top"
-                Click="ShowCode_Click"/>
-
-            <TextBox x:Name="CodeViewer" Margin="10,50,10,10" 
-                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                 AcceptsReturn="True" TextWrapping="Wrap" 
-                 IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
-        </Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400"></ColumnDefinition>
+            <ColumnDefinition Width="400"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <DataGrid 
+        x:Name="UsersGrid"
+        Grid.Column="0"
+        ItemsSource="{Binding Lists}"
+        SelectedItem="{Binding SelectedItem}"
+        d:ItemsSource="{d:SampleData ItemCount=10}" SelectionChanged="UsersGrid_SelectionChanged"/>
+        <StackPanel
+        Margin="10"
+        Grid.Column="1">
+            <TextBlock>ID</TextBlock>
+            <TextBlock Text="{Binding SelectedItem.Id}"></TextBlock>
+            <TextBlock>Title</TextBlock>
+            <TextBox Text="{Binding SelectedItem.Name}"></TextBox>
+            <StackPanel 
+            HorizontalAlignment="Center"
+            Orientation="Horizontal" 
+            Margin="10">
+                <Button Command="{Binding NewCommand}" Margin="5" Padding="5">New</Button>
+                <Button Command="{Binding SaveCommand}" Margin="5" Padding="5">Save</Button>
+                <Button Command="{Binding DeleteCommand}" Margin="5" Padding="5">Delete</Button>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>
