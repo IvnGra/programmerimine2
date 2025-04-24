@@ -1,22 +1,25 @@
-﻿using System.Collections.ObjectModel;
+﻿using KooliProjekt.WpfApp.Api;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Windows.Input;
+using System.Xml.Linq;
+using WpfApp1;
 using WpfApp1.Api;
 
 namespace WpfApp1
 {
-    class MainWindowViewModel : NotifyPropertyChangedBase
+    public class MainWindowViewModel : NotifyPropertyChangedBase
     {
         public ObservableCollection<User> Lists { get; private set; }
-
         public ICommand NewCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
         public Predicate<User> ConfirmDelete { get; set; }
 
         private readonly IApiClient _apiClient;
+
         public MainWindowViewModel() : this(new ApiClient())
         {
-
         }
 
         public MainWindowViewModel(IApiClient apiClient)
@@ -76,8 +79,14 @@ namespace WpfApp1
         {
             Lists.Clear();
 
-            var lists = await _apiClient.List();
-            foreach (var list in lists)
+            var result = await _apiClient.List();
+            if (result.HasError)
+            {
+                // Handle error
+                return;
+            }
+
+            foreach (var list in result.Value)
             {
                 Lists.Add(list);
             }
@@ -97,5 +106,4 @@ namespace WpfApp1
             }
         }
     }
-
 }

@@ -4,13 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KooliProjekt.WpfApp.Api;
 
 namespace WpfApp1.Api
 {
-    interface IApiClient
+    public interface IApiClient
     {
-        Task<List<User>> List();
-        Task Save(User list);
-        Task Delete(int id);
+        Task<Result<List<User>>> List();
+        Task<Result> Save(User user);
+        Task<Result> Delete(int id);
     }
+
 }

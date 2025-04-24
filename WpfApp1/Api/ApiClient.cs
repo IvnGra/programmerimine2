@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using KooliProjekt.WpfApp.Api;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
 using System.Threading.Tasks;
-
 
 namespace WpfApp1.Api
 {
-    class ApiClient : IApiClient
+    public class ApiClient : IApiClient
     {
         private readonly HttpClient _httpClient;
 
@@ -20,30 +15,59 @@ namespace WpfApp1.Api
             _httpClient.BaseAddress = new Uri("https://localhost:7136/api/");
         }
 
-        public async Task<List<User>> List()
+        public async Task<Result<List<User>>> List()
         {
-            var result = await _httpClient.GetFromJsonAsync<List<User>>("Users");
+            var result = new Result<List<User>>();
+
+            try
+            {
+                result.Value = await _httpClient.GetFromJsonAsync<List<User>>("Users");
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
+
+            return result;
+        }
+        public async Task<Result> Save(User user)
+        {
+            var result = new Result();
+
+            try
+            {
+                if (user.Id == 0)
+                {
+                    await _httpClient.PostAsJsonAsync("Users", user);
+                }
+                else
+                {
+                    await _httpClient.PutAsJsonAsync("Users/" + user.Id, user);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
 
             return result;
         }
 
-
-
-        public async Task Save(User list)
+        public async Task<Result> Delete(int id)
         {
-            if (list.Id == 0)
-            {
-                await _httpClient.PostAsJsonAsync("Users", list);
-            }
-            else
-            {
-                await _httpClient.PutAsJsonAsync("Users/" + list.Id, list);
-            }
-        }
+            var result = new Result();
 
-        public async Task Delete(int id)
-        {
-            await _httpClient.DeleteAsync("Users/" + id);
+            try
+            {
+                await _httpClient.DeleteAsync("Users/" + id);
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
+
+            return result;
         }
     }
 }
