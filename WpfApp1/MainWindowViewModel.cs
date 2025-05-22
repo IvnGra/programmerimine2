@@ -1,108 +1,122 @@
-﻿using KooliProjekt.WpfApp.Api;
+﻿
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Windows.Input;
-using System.Xml.Linq;
-using WpfApp1;
 using WpfApp1.Api;
+using System;
+using System.Threading.Tasks;
+using WpfApp1;
 
 namespace WpfApp1
 {
     public class MainWindowViewModel : NotifyPropertyChangedBase
     {
-        public ObservableCollection<User> Lists { get; private set; }
+        public ObservableCollection<User> Users { get; private set; }
         public ICommand NewCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
         public Predicate<User> ConfirmDelete { get; set; }
+        public Action<string> OnError { get; set; }
 
         private readonly IApiClient _apiClient;
 
+        private User _selectedUser;
+        public User SelectedUser
+        {
+            get { return _selectedUser; }
+            set
+            {
+                _selectedUser = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public MainWindowViewModel() : this(new ApiClient())
         {
+            // Initializes and loads user data
         }
 
         public MainWindowViewModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
-
-            Lists = new ObservableCollection<User>();
+            Users = new ObservableCollection<User>();
 
             NewCommand = new RelayCommand<User>(
-                // Execute
-                list =>
+                // Execute: Create a new User instance
+                user =>
                 {
-                    SelectedItem = new User();
+                    SelectedUser = new User();
                 }
             );
 
             SaveCommand = new RelayCommand<User>(
-                // Execute
-                async list =>
+                // Execute: Save the selected User
+                async user =>
                 {
-                    await _apiClient.Save(SelectedItem);
-                    await Load();
+                    try
+                    {
+                        if (SelectedUser.Id == 0)
+                        {
+                            await _apiClient.Save(SelectedUser);  // Create new user
+                        }
+                        else
+                        {
+                            await _apiClient.Save(SelectedUser);  // Update existing user
+                        }
+                        await LoadUsers();  // Reload data after save
+                    }
+                    catch (Exception ex)
+                    {
+                        OnError?.Invoke($"Error while saving user: {ex.Message}");
+                    }
                 },
-                // CanExecute
-                list =>
-                {
-                    return SelectedItem != null;
-                }
+                // CanExecute: Enable the command if SelectedUser is not null
+                user => SelectedUser != null
             );
 
             DeleteCommand = new RelayCommand<User>(
-                // Execute
-                async list =>
+                // Execute: Delete the selected User
+                async user =>
                 {
-                    if (ConfirmDelete != null)
+                    try
                     {
-                        var result = ConfirmDelete(SelectedItem);
-                        if (!result)
+                        if (ConfirmDelete?.Invoke(SelectedUser) ?? true)
                         {
-                            return;
+                            await _apiClient.Delete(SelectedUser.Id);  // Delete user by ID
+                            Users.Remove(SelectedUser);
+                            SelectedUser = null;
                         }
                     }
-
-                    await _apiClient.Delete(SelectedItem.Id);
-                    Lists.Remove(SelectedItem);
-                    SelectedItem = null;
+                    catch (Exception ex)
+                    {
+                        OnError?.Invoke($"Error while deleting user: {ex.Message}");
+                    }
                 },
-                // CanExecute
-                list =>
-                {
-                    return SelectedItem != null;
-                }
+                // CanExecute: Enable the command if SelectedUser is not null
+                user => SelectedUser != null
             );
         }
 
-        public async Task Load()
+        public async Task LoadUsers()
         {
-            Lists.Clear();
+            Users.Clear();
 
-            var result = await _apiClient.List();
-            if (result.HasError)
+            try
             {
-                // Handle error
-                return;
-            }
+                var users = await _apiClient.List<User>();  // Get the list of users from the API
+                if (users == null)
+                {
+                    OnError?.Invoke("Failed to load users. The response was null.");
+                    return;
+                }
 
-            foreach (var list in result.Value)
-            {
-                Lists.Add(list);
+                foreach (var user in Users)
+                {
+                    Users.Add(user);
+                }
             }
-        }
-
-        private User _selectedItem;
-        public User SelectedItem
-        {
-            get
+            catch (Exception ex)
             {
-                return _selectedItem;
-            }
-            set
-            {
-                _selectedItem = value;
-                NotifyPropertyChanged();
+                OnError?.Invoke($"Error while loading users: {ex.Message}");
             }
         }
     }

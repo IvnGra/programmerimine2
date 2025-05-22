@@ -28,5 +28,6 @@ namespace KooliProjekt.Data
         public int Team1_goals { get; set; }
         public int Team2_goals { get; set; }
         public string Description { get; set; }
+
     }
 }

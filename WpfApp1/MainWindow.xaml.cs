@@ -1,48 +1,121 @@
-﻿using System;
+﻿
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
+using WpfApp1.Api;
+using System;
+using System.Threading.Tasks;
 using WpfApp1;
 
-namespace WpfApp1
+namespace WpfApp
 {
-    public partial class MainWindow : Window
+    public class MainWindowViewModel : NotifyPropertyChangedBase
     {
-        public MainWindow()
-        {
-            InitializeComponent();
+        public ObservableCollection<User> Users { get; private set; }
+        public ICommand NewCommand { get; private set; }
+        public ICommand SaveCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
+        public Predicate<User> ConfirmDelete { get; set; }
+        public Action<string> OnError { get; set; }
 
-            Loaded += MainWindow_Loaded;
-        }
+        private readonly IApiClient _apiClient;
 
-        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private User _selectedUser;
+        public User SelectedUser
         {
-            var viewModel = new MainWindowViewModel();
-            viewModel.ConfirmDelete = _ =>
+            get { return _selectedUser; }
+            set
             {
-                var result = MessageBox.Show(
-                                "Are you sure you want to delete selected item?",
-                                "Delete list",
-                                MessageBoxButton.YesNo,
-                                MessageBoxImage.Stop
-                                );
-                return (result == MessageBoxResult.Yes);
-            };
-
-            DataContext = viewModel;
-
-            await viewModel.Load();
+                _selectedUser = value;
+                NotifyPropertyChanged();
+            }
         }
 
-        private void UsersGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        public MainWindowViewModel() : this(new ApiClient())
         {
+            // Initializes and loads user data
+        }
 
+        public MainWindowViewModel(IApiClient apiClient)
+        {
+            _apiClient = apiClient;
+
+            Users = new ObservableCollection<User>();
+
+            NewCommand = new RelayCommand<User>(
+                user =>
+                {
+                    SelectedUser = new User();
+                }
+            );
+
+            SaveCommand = new RelayCommand<User>(
+                async user =>
+                {
+                    try
+                    {
+                        if (SelectedUser.Id == 0)
+                        {
+                            await _apiClient.Save(SelectedUser);
+                        }
+                        else
+                        {
+                            await _apiClient.Save(SelectedUser);
+                        }
+                        await LoadUsers();
+                    }
+                    catch (Exception ex)
+                    {
+                        OnError?.Invoke($"Error while saving user: {ex.Message}");
+                    }
+                },
+                user => SelectedUser != null
+            );
+
+            DeleteCommand = new RelayCommand<User>(
+                async user =>
+                {
+                    try
+                    {
+                        if (ConfirmDelete?.Invoke(SelectedUser) ?? true)
+                        {
+                            await _apiClient.Delete(SelectedUser.Id);  // Delete user by ID
+                            Users.Remove(SelectedUser);
+                            SelectedUser = null;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        OnError?.Invoke($"Error while deleting user: {ex.Message}");
+                    }
+                },
+                // CanExecute: Enable the command if SelectedUser is not null
+                user => SelectedUser != null
+            );
+        }
+
+        public async Task LoadUsers()
+        {
+            Users.Clear();
+
+            try
+            {
+                // Call List() without type argument
+                var users = await _apiClient.List();  // Assuming List() returns a collection of User objects
+                if (users == null)
+                {
+                    OnError?.Invoke("Failed to load users. The response was null.");
+                    return;
+                }
+
+                foreach (var user in users)
+                {
+                    Users.Add(user);  // Add each user to the ObservableCollection
+                }
+            }
+            catch (Exception ex)
+            {
+                OnError?.Invoke($"Error while loading users: {ex.Message}");
+            }
         }
     }
 }

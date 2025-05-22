@@ -41,7 +41,8 @@ namespace KooliProjekt.Data
                 Team1_goals = 5,
                 Team2_goals = 3,
                 Match_time = DateTime.Now,
-                Name = "UEFA Europe League"
+                Name = "UEFA Europe League",
+                Description = "-"
             },
             new Match
             {
@@ -51,7 +52,8 @@ namespace KooliProjekt.Data
                 Team1_goals = 4,
                 Team2_goals = 2,
                 Match_time = DateTime.Now,
-                Name = "UEFA Europe League"
+                Name = "UEFA Europe League",
+                Description = "-"
             }
         };
 
