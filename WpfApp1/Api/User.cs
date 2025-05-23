@@ -10,10 +10,22 @@ namespace WpfApp1.Api
 {
     public class User
     {
-        [Key]
         public int Id { get; set; }
-        public string Name { get; set; } 
-        
+        public string Username { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is not User other)
+                return false;
+
+            return Id == other.Id && Username == other.Username;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Username);
+        }
     }
+
+
 }

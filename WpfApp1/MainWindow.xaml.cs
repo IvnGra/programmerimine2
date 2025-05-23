@@ -99,15 +99,22 @@ namespace WpfApp
 
             try
             {
-                // Call List() without type argument
-                var users = await _apiClient.List();  // Assuming List() returns a collection of User objects
-                if (users == null)
+                // Call List() to get the Result<List<User>>
+                var result = await _apiClient.List();
+
+                if (result == null || result.Value == null)
                 {
                     OnError?.Invoke("Failed to load users. The response was null.");
                     return;
                 }
 
-                foreach (var user in users)
+                if (!string.IsNullOrEmpty(result.Error))
+                {
+                    OnError?.Invoke($"Error from server: {result.Error}");
+                    return;
+                }
+
+                foreach (var user in result.Value)
                 {
                     Users.Add(user);  // Add each user to the ObservableCollection
                 }
@@ -117,5 +124,6 @@ namespace WpfApp
                 OnError?.Invoke($"Error while loading users: {ex.Message}");
             }
         }
+
     }
 }

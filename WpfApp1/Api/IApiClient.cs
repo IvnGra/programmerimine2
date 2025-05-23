@@ -1,11 +1,14 @@
-﻿namespace WpfApp1.Api
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace WpfApp1.Api
 {
     public interface IApiClient
     {
-        Task<List<User>> List();
-        Task Save(User user);
-        Task Delete(int id);
-        Task<IEnumerable<object>> List<T>();
-
+        Task<Result<List<User>>> List();
+        Task<Result<User>> Save(User user);
+        Task<Result<object>> Delete(int id);
+        Task<Result<User>> Get(int id);
+        Task<Result<List<T>>> List<T>();
     }
 }

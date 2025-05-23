@@ -7,11 +7,12 @@ using KooliProjekt.WpfApp.Api;
 
 namespace WpfApp1.Api
 {
-    public class Result<T> : Result
+    public class Result<T>
     {
-    public T Value { get; set; }
-    public string Error { get; set; }
-
+        public T? Value { get; set; }
+        public string? Error { get; set; }
+        public bool IsSuccess => Error == null;
     }
+
 }
 

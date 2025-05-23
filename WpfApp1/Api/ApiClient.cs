@@ -1,46 +1,139 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace WpfApp1.Api
 {
-    class ApiClient : IApiClient
+    public class ApiClient : IApiClient
     {
         private readonly HttpClient _httpClient;
+
         public ApiClient()
         {
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7136/api/");
         }
-        public async Task<List<User>> List()
-        {
-            var result = await _httpClient.GetFromJsonAsync<List<User>>("Users");
 
+        public async Task<Result<List<User>>> List()
+        {
+            var result = new Result<List<User>>();
+            try
+            {
+                result.Value = await _httpClient.GetFromJsonAsync<List<User>>("Users");
+            }
+            catch (HttpRequestException)
+            {
+                result.Error = "Cannot connect to server. Please try again later.";
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
             return result;
         }
-        public async Task Save(User list)
+
+        public async Task<Result<User>> Save(User user)
         {
-            if (list.Id == 0)
+            var result = new Result<User>();
+            try
             {
-                await _httpClient.PostAsJsonAsync("Users", list);
+                HttpResponseMessage response;
+                if (user.Id == 0)
+                {
+                    response = await _httpClient.PostAsJsonAsync("Users", user);
+                }
+                else
+                {
+                    response = await _httpClient.PutAsJsonAsync("Users/" + user.Id, user);
+                }
+
+                if (response.IsSuccessStatusCode)
+                {
+                    result.Value = user;
+                }
+                else
+                {
+                    result.Error = $"Server returned error: {response.StatusCode} - {response.ReasonPhrase}";
+                }
             }
-            else
+            catch (HttpRequestException)
             {
-                await _httpClient.PutAsJsonAsync("Users/" + list.Id, list);
+                result.Error = "Cannot connect to server. Please try again later.";
             }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
+            return result;
         }
-        public async Task Delete(int id)
+
+        public async Task<Result<object>> Delete(int id)
         {
-            await _httpClient.DeleteAsync("Users/" + id);
+            var result = new Result<object>();
+            try
+            {
+                var response = await _httpClient.DeleteAsync("Users/" + id);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    result.Value = null;
+                }
+                else
+                {
+                    result.Error = $"Server returned error: {response.StatusCode} - {response.ReasonPhrase}";
+                    result.Value = null;
+                }
+            }
+            catch (HttpRequestException)
+            {
+                result.Error = "Cannot connect to server. Please try again later.";
+                result.Value = null;
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+                result.Value = null;
+            }
+            return result;
         }
-        public Task<IEnumerable<object>> List<T>()
+
+        public async Task<Result<User>> Get(int id)
         {
-            throw new NotImplementedException();
+            var result = new Result<User>();
+            try
+            {
+                result.Value = await _httpClient.GetFromJsonAsync<User>($"Users/{id}");
+            }
+            catch (HttpRequestException)
+            {
+                result.Error = "Cannot connect to server. Please try again later.";
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
+            return result;
+        }
+
+        public async Task<Result<List<T>>> List<T>()
+        {
+            var result = new Result<List<T>>();
+            try
+            {
+                var endpoint = typeof(T).Name + "s"; // Assumes plural form by adding 's'
+                result.Value = await _httpClient.GetFromJsonAsync<List<T>>(endpoint);
+            }
+            catch (HttpRequestException)
+            {
+                result.Error = "Cannot connect to server. Please try again later.";
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
+            return result;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Moq;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using WpfApp1;
 using WpfApp1.Api;
 using Xunit;
@@ -20,74 +19,81 @@ namespace WpfApp1.Tests
         }
 
         [Fact]
-        public void NewCommand_ShouldCreateNewProduct()
+        public void NewCommand_ShouldCreateNewUser()
         {
-            // Arrange
-            var initialCount = _viewModel.Lists.Count;
-
             // Act
             ((RelayCommand<User>)_viewModel.NewCommand).Execute(null);
 
             // Assert
-            Assert.NotNull(_viewModel.SelectedItem);
-            Assert.IsType<User>(_viewModel.SelectedItem);
+            Assert.NotNull(_viewModel.SelectedUser);
+            Assert.IsType<User>(_viewModel.SelectedUser);
         }
 
         [Fact]
-        public async Task SaveCommand_ShouldSaveProduct()
+        public async Task SaveCommand_ShouldSaveUser()
         {
             // Arrange
-            var user = new User { Id = 1, Name = "John doe" };
-            _viewModel.SelectedItem = user;
+            var user = new User { Id = 1, Username = "TestUser" };
+            _viewModel.SelectedUser = user;
+
+            _apiClientMock.Setup(api => api.Save(user))
+                          .ReturnsAsync(new Result<User> { Value = user });
+
+            _apiClientMock.Setup(api => api.List<User>())
+                          .ReturnsAsync(new Result<List<User>> { Value = new List<User> { user } });
 
             // Act
             await Task.Run(() => ((RelayCommand<User>)_viewModel.SaveCommand).Execute(null));
 
             // Assert
             _apiClientMock.Verify(api => api.Save(user), Times.Once);
-            _apiClientMock.Verify(api => api.List(), Times.Once);
+            _apiClientMock.Verify(api => api.List<User>(), Times.Once);
         }
 
         [Fact]
-        public async Task DeleteCommand_ShouldDeleteProduct()
+        public async Task DeleteCommand_ShouldDeleteUser()
         {
             // Arrange
-            var user = new User { Id = 1, Name = "John Doe" };
-            _viewModel.SelectedItem = user;
-            _viewModel.Lists.Add(user);
+            var user = new User { Id = 1, Username = "TestUser" };
+            _viewModel.Users.Add(user);
+            _viewModel.SelectedUser = user;
+            _viewModel.ConfirmDelete = u => true;
 
-            _viewModel.ConfirmDelete = p => true;
+            _apiClientMock.Setup(api => api.Delete(user.Id))
+                          .ReturnsAsync(new Result<object> { Value = null });
 
             // Act
             await Task.Run(() => ((RelayCommand<User>)_viewModel.DeleteCommand).Execute(null));
 
             // Assert
             _apiClientMock.Verify(api => api.Delete(user.Id), Times.Once);
-            Assert.DoesNotContain(user, _viewModel.Lists);
-            Assert.Null(_viewModel.SelectedItem);
+            Assert.DoesNotContain(user, _viewModel.Users);
+            Assert.Null(_viewModel.SelectedUser);
         }
 
         [Fact]
-        public async Task Load_ShouldPopulateLists()
+        public async Task LoadUsers_ShouldPopulateUsers()
         {
             // Arrange
             var users = new List<User>
             {
-                new User { Id = 1, Name = "John doe" },
-                new User { Id = 2, Name = "Jane doe" }
+                new User { Id = 1, Username = "User 1" },
+                new User { Id = 2, Username = "User 2" }
             };
-            _apiClientMock
-                .Setup(api => api.List())
-                .ReturnsAsync(new Result<List<User>> { Value = users });
+
+            _apiClientMock.Setup(api => api.List<User>())
+                          .ReturnsAsync(new Result<List<User>> { Value = users });
 
             // Act
-            await _viewModel.Load();
+            await _viewModel.LoadUsers();
 
             // Assert
-            Assert.Equal(users.Count, _viewModel.Lists.Count);
-            foreach (var product in users)
+            Assert.Equal(users.Count, _viewModel.Users.Count);
+
+            // Using property-based equality check:
+            foreach (var user in users)
             {
-                Assert.Contains(product, _viewModel.Lists);
+                Assert.Contains(_viewModel.Users, u => u.Id == user.Id && u.Username == user.Username);
             }
         }
     }
