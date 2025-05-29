@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PublicApi.Api
 {
@@ -15,6 +16,16 @@ namespace PublicApi.Api
         }
 
         internal void AddError(object key, object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator Result(Result<User> v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator Result(Result<List<User>> v)
         {
             throw new NotImplementedException();
         }

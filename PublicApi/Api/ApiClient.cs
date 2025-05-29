@@ -50,12 +50,12 @@ namespace PublicAPI.Api
             if (user.Id == 0)
             {
                 var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
-                response = await _httpClient.PostAsync("Products", content);
+                response = await _httpClient.PostAsync("Users", content);
             }
             else
             {
                 var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
-                response = await _httpClient.PutAsync("Products/" + user.Id, content);
+                response = await _httpClient.PutAsync("Users/" + user.Id, content);
             }
 
             if (response.IsSuccessStatusCode)
@@ -71,7 +71,7 @@ namespace PublicAPI.Api
                     // Copy errors from errorResult to result    
                     foreach (var kvp in errorResult.Error)
                     {
-                        result.AddError(kvp.Key, msg);
+                      
                     }
                 }
                 else
@@ -113,7 +113,7 @@ namespace PublicAPI.Api
 
             try
             {
-                var response = await _httpClient.GetAsync("Products/" + id);
+                var response = await _httpClient.GetAsync("Users/" + id);
                 if (response.IsSuccessStatusCode)
                 {
                     var user = await JsonSerializer.DeserializeAsync<User>(await response.Content.ReadAsStreamAsync());
@@ -143,6 +143,16 @@ namespace PublicAPI.Api
         }
 
         public Task<Result<List<T>>> List<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result<T>> Get<T>(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result<bool>> Save<T>(T item)
         {
             throw new NotImplementedException();
         }

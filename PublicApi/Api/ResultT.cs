@@ -1,24 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PublicApi.Api
 {
-    public class Result<T> : Result
+    public class Result<T>
     {
         public T Value { get; set; }
+        public Dictionary<string, string> Errors { get; set; } = new Dictionary<string, string>();
 
-        internal void AddError(object key, object msg)
+        public void AddError(string key, string message)
         {
-            throw new NotImplementedException();
-        }
-
-        internal void AddError(object key, object msg)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void AddError(object key, object msg)
-        {
-            throw new NotImplementedException();
+            Errors[key] = message;
         }
     }
+
 }
