@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using KooliProjekt.WinFormsApp.Api;
+using PublicApi.Api;
 
 namespace KooliProjekt.WinFormsApp
 {
@@ -19,7 +19,7 @@ namespace KooliProjekt.WinFormsApp
         public async Task Initialize()
         {
             var result = await _apiClient.List();
-            _view.Users = result.Value;
+            _view.Users = (IList<Data.User>)result.Value;
         }
 
         public async Task SaveUser()
@@ -45,7 +45,7 @@ namespace KooliProjekt.WinFormsApp
 
             // 🔧 Fix: Refresh the user list and update the view
             var listResult = await _apiClient.List();
-            _view.Users = listResult.Value;
+            _view.Users = (IList<Data.User>)listResult.Value;
 
             _view.ShowMessage(
                 "User saved successfully.",
@@ -78,7 +78,7 @@ namespace KooliProjekt.WinFormsApp
             await _apiClient.Delete(userId);
 
             var result = await _apiClient.List();
-            _view.Users = result.Value;
+            _view.Users = (IList<Data.User>)result.Value;
 
             _view.ShowMessage(
                 "Users deleted successfully.",

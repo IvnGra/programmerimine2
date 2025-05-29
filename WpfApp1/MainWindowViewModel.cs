@@ -1,10 +1,11 @@
 ﻿
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using WpfApp1.Api;
+using PublicApi.Api;
 using System;
 using System.Threading.Tasks;
 using WpfApp1;
+using PublicAPI.Api;
 
 namespace WpfApp1
 {

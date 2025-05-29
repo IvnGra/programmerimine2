@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WpfApp1;
-using WpfApp1.Api;
+using PublicApi.Api;
 using Xunit;
 
 namespace WpfApp1.Tests
@@ -32,40 +32,40 @@ namespace WpfApp1.Tests
         [Fact]
         public async Task SaveCommand_ShouldSaveUser()
         {
-            // Arrange
+            // Arrange  
             var user = new User { Id = 1, Username = "TestUser" };
             _viewModel.SelectedUser = user;
 
-            _apiClientMock.Setup(api => api.Save(user))
-                          .ReturnsAsync(new Result<User> { Value = user });
+            _apiClientMock.Setup(api => api.Save(It.IsAny<User>()))
+                          .ReturnsAsync(new Result<bool> { Value = true });
 
             _apiClientMock.Setup(api => api.List<User>())
                           .ReturnsAsync(new Result<List<User>> { Value = new List<User> { user } });
 
-            // Act
+            // Act  
             await Task.Run(() => ((RelayCommand<User>)_viewModel.SaveCommand).Execute(null));
 
-            // Assert
-            _apiClientMock.Verify(api => api.Save(user), Times.Once);
+            // Assert  
+            _apiClientMock.Verify(api => api.Save(It.IsAny<User>()), Times.Once);
             _apiClientMock.Verify(api => api.List<User>(), Times.Once);
         }
 
         [Fact]
         public async Task DeleteCommand_ShouldDeleteUser()
         {
-            // Arrange
+            // Arrange  
             var user = new User { Id = 1, Username = "TestUser" };
             _viewModel.Users.Add(user);
             _viewModel.SelectedUser = user;
             _viewModel.ConfirmDelete = u => true;
 
             _apiClientMock.Setup(api => api.Delete(user.Id))
-                          .ReturnsAsync(new Result<object> { Value = null });
+                          .ReturnsAsync(new Result<bool> { Value = true });
 
-            // Act
+            // Act  
             await Task.Run(() => ((RelayCommand<User>)_viewModel.DeleteCommand).Execute(null));
 
-            // Assert
+            // Assert  
             _apiClientMock.Verify(api => api.Delete(user.Id), Times.Once);
             Assert.DoesNotContain(user, _viewModel.Users);
             Assert.Null(_viewModel.SelectedUser);
