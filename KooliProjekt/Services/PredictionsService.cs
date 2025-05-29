@@ -1,49 +1,36 @@
 ﻿using KooliProjekt.Data;
-using Microsoft.EntityFrameworkCore;
+using KooliProjekt.Data.Repositories;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
-    public class PredictionsService : IPredictionService
+    public class PredictionsService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PredictionsService(ApplicationDbContext context)
+        public PredictionsService(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<PagedResult<Prediction>> List(int page, int pageSize)
+        public Task<PagedResult<Prediction>> List(int page, int pageSize)
         {
-            return await _context.Predictions.GetPagedAsync(page, 5);
+            return _unitOfWork.PredictionRepository.List(page, pageSize);
         }
 
-        public async Task<Prediction> Get(int id)
+        public Task<Prediction> Get(int id)
         {
-            return await _context.Predictions.FirstOrDefaultAsync(m => m.Id == id);
+            return _unitOfWork.PredictionRepository.Get(id);
         }
 
-        public async Task Save(Prediction list)
+        public Task Save(Prediction prediction)
         {
-            if (list.Id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
-
-            await _context.SaveChangesAsync();
+            return _unitOfWork.PredictionRepository.Save(prediction);
         }
 
-        public async Task Delete(int id)
+        public Task Delete(int id)
         {
-            var todoList = await _context.Predictions.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.Predictions.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }
+            return _unitOfWork.PredictionRepository.Delete(id);
         }
     }
 }

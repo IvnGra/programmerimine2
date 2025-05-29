@@ -18,10 +18,12 @@ namespace KooliProjekt.UnitTests.ServiceTests
         {
             _uowMock = new Mock<IUnitOfWork>();
             _repositoryMock = new Mock<ILeaderboardRepository>();
-            _leaderboardService = new LeaderboardService(_uowMock.Object);
 
-            _uowMock.SetupGet(u => u.LeaderboardReposiory)
+            // Setup the unit of work to return our repository mock
+            _uowMock.SetupGet(u => u.LeaderboardRepository)
                     .Returns(_repositoryMock.Object);
+
+            _leaderboardService = new LeaderboardService(_uowMock.Object);
         }
 
         [Fact]

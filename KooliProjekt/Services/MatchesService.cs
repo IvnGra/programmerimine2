@@ -1,49 +1,36 @@
 ﻿using KooliProjekt.Data;
-using Microsoft.EntityFrameworkCore;
+using KooliProjekt.Data.Repositories;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
-    public class MatchService : IMatchesService
+    public class MatchService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public MatchService(ApplicationDbContext context)
+        public MatchService(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<PagedResult<Match>> List(int page, int pageSize)
+        public Task<PagedResult<Match>> List(int page, int pageSize)
         {
-            return await _context.Matchs.GetPagedAsync(page, 5);
+            return _unitOfWork.MatchRepository.List(page, pageSize);
         }
 
-        public async Task<Match> Get(int id)
+        public Task<Match> Get(int id)
         {
-            return await _context.Matchs.FirstOrDefaultAsync(m => m.Id == id);
+            return _unitOfWork.MatchRepository.Get(id);
         }
 
-        public async Task Save(Match list)
+        public Task Save(Match match)
         {
-            if (list.Id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
-
-            await _context.SaveChangesAsync();
+            return _unitOfWork.MatchRepository.Save(match);
         }
 
-        public async Task Delete(int id)
+        public Task Delete(int id)
         {
-            var todoList = await _context.Matchs.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.Matchs.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }
+            return _unitOfWork.MatchRepository.Delete(id);
         }
     }
 }

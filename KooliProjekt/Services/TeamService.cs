@@ -1,49 +1,36 @@
 ﻿using KooliProjekt.Data;
-using Microsoft.EntityFrameworkCore;
+using KooliProjekt.Data.Repositories;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
-    public class TeamService : ITeamsService
+    public class TeamService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TeamService(ApplicationDbContext context)
+        public TeamService(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<PagedResult<Team>> List(int page, int pageSize)
+        public Task<PagedResult<Team>> List(int page, int pageSize)
         {
-            return await _context.Teams.GetPagedAsync(page, 5);
+            return _unitOfWork.TeamRepository.List(page, pageSize);
         }
 
-        public async Task<Team> Get(int id)
+        public Task<Team> Get(int id)
         {
-            return await _context.Teams.FirstOrDefaultAsync(m => m.Id == id);
+            return _unitOfWork.TeamRepository.Get(id);
         }
 
-        public async Task Save(Team list)
+        public Task Save(Team team)
         {
-            if (list.Id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
-
-            await _context.SaveChangesAsync();
+            return _unitOfWork.TeamRepository.Save(team);
         }
 
-        public async Task Delete(int id)
+        public Task Delete(int id)
         {
-            var todoList = await _context.Teams.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.Teams.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }
+            return _unitOfWork.TeamRepository.Delete(id);
         }
     }
 }

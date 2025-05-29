@@ -1,49 +1,36 @@
 ﻿using KooliProjekt.Data;
-using Microsoft.EntityFrameworkCore;
+using KooliProjekt.Data.Repositories;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
-    public class TournamentService : ITournamentsService
+    public class TournamentService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TournamentService(ApplicationDbContext context)
+        public TournamentService(IUnitOfWork unitOfWork)  // <-- Accept IUnitOfWork, NOT ApplicationDbContext
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<PagedResult<Tournament>> List(int page, int pageSize)
+        public Task<PagedResult<Tournament>> List(int page, int pageSize)
         {
-            return await _context.Tournaments.GetPagedAsync(page, 5);
+            return _unitOfWork.TournamentRepository.List(page, pageSize);
         }
 
-        public async Task<Tournament> Get(int id)
+        public Task<Tournament> Get(int id)
         {
-            return await _context.Tournaments.FirstOrDefaultAsync(m => m.Id == id);
+            return _unitOfWork.TournamentRepository.Get(id);
         }
 
-        public async Task Save(Tournament list)
+        public Task Save(Tournament tournament)
         {
-            if (list.Id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
-
-            await _context.SaveChangesAsync();
+            return _unitOfWork.TournamentRepository.Save(tournament);
         }
 
-        public async Task Delete(int id)
+        public Task Delete(int id)
         {
-            var todoList = await _context.Tournaments.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.Tournaments.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }
+            return _unitOfWork.TournamentRepository.Delete(id);
         }
     }
 }

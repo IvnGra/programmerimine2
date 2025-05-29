@@ -1,49 +1,36 @@
 ﻿using KooliProjekt.Data;
-using Microsoft.EntityFrameworkCore;
+using KooliProjekt.Data.Repositories;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
-    public class LeaderboardService : ILeaderboardService
+    public class LeaderboardService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public LeaderboardService(ApplicationDbContext context)
+        public LeaderboardService(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<PagedResult<Leaderboard>> List(int page, int pageSize)
+        public Task<PagedResult<Leaderboard>> List(int page, int pageSize)
         {
-            return await _context.Leaderboards.GetPagedAsync(page, 5);
+            return _unitOfWork.LeaderboardRepository.List(page, pageSize);
         }
 
-        public async Task<Leaderboard> Get(int id)
+        public Task<Leaderboard> Get(int id)
         {
-            return await _context.Leaderboards.FirstOrDefaultAsync(m => m.Id == id);
+            return _unitOfWork.LeaderboardRepository.Get(id);
         }
 
-        public async Task Save(Leaderboard list)
+        public Task Save(Leaderboard leaderboard)
         {
-            if (list.Id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
-
-            await _context.SaveChangesAsync();
+            return _unitOfWork.LeaderboardRepository.Save(leaderboard);
         }
 
-        public async Task Delete(int id)
+        public Task Delete(int id)
         {
-            var todoList = await _context.Leaderboards.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.Leaderboards.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }
+            return _unitOfWork.LeaderboardRepository.Delete(id);
         }
     }
 }

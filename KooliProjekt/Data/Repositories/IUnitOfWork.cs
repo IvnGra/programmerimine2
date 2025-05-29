@@ -11,7 +11,8 @@
         IMatchRepository MatchRepository { get; }
         ITournamentRepository TournamentRepository { get; }
         IPredicitonRepository PredictionRepository { get; }
-        ILeaderboardRepository LeaderboardReposiory { get; }
+        ILeaderboardRepository LeaderboardRepository { get; }
+
 
     }
 }

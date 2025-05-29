@@ -30,7 +30,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Arrange
             var teams = new List<Team>
             {
-                new Team { Id = 1, TeamName = "Team A"},
+                new Team { Id = 1, TeamName = "Team A" },
                 new Team { Id = 2, TeamName = "Team B" }
             };
             var pagedResult = new PagedResult<Team> { Results = teams };
@@ -48,7 +48,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
         public async Task Get_Should_Return_Team()
         {
             // Arrange
-            var team = new Team { Id = 1, TeamName = "Team A"};
+            var team = new Team { Id = 1, TeamName = "Team A" };
             _repositoryMock.Setup(r => r.Get(1)).ReturnsAsync(team);
 
             // Act

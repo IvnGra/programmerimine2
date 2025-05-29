@@ -31,7 +31,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             var predictions = new List<Prediction>
             {
                 new Prediction { Id = 1, UserId = 101, MatchId = 201, Team1_predicted_goals = 2, Team2_predicted_goals = 1 },
-                new Prediction { Id = 2, UserId = 102, MatchId = 202,Team1_predicted_goals = 0, Team2_predicted_goals= 3 }
+                new Prediction { Id = 2, UserId = 102, MatchId = 202, Team1_predicted_goals = 0, Team2_predicted_goals = 3 }
             };
             var pagedResult = new PagedResult<Prediction> { Results = predictions };
             _repositoryMock.Setup(r => r.List(It.IsAny<int>(), It.IsAny<int>()))
