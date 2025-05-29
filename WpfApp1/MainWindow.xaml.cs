@@ -99,8 +99,7 @@ namespace WpfApp
 
             try
             {
-                // Call List() to get the Result<List<User>>
-                var result = await _apiClient.List();
+                var result = await _apiClient.List<User>();
 
                 if (result == null || result.Value == null)
                 {
@@ -116,7 +115,7 @@ namespace WpfApp
 
                 foreach (var user in result.Value)
                 {
-                    Users.Add(user);  // Add each user to the ObservableCollection
+                    Users.Add(user);
                 }
             }
             catch (Exception ex)
@@ -124,6 +123,5 @@ namespace WpfApp
                 OnError?.Invoke($"Error while loading users: {ex.Message}");
             }
         }
-
     }
 }

@@ -96,28 +96,30 @@ namespace WpfApp1
             );
         }
 
+        // ViewModel method
         public async Task LoadUsers()
         {
             Users.Clear();
 
-            try
-            {
-                var users = await _apiClient.List<User>();  // Get the list of users from the API
-                if (users == null)
-                {
-                    OnError?.Invoke("Failed to load users. The response was null.");
-                    return;
-                }
+            var result = await _apiClient.List<User>();
 
-                foreach (var user in Users)
-                {
-                    Users.Add(user);
-                }
-            }
-            catch (Exception ex)
+            if (result == null || result.Value == null)
             {
-                OnError?.Invoke($"Error while loading users: {ex.Message}");
+                OnError?.Invoke("Failed to load users. The response was null.");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(result.Error))
+            {
+                OnError?.Invoke($"Error from server: {result.Error}");
+                return;
+            }
+
+            foreach (var user in result.Value)
+            {
+                Users.Add(user);
             }
         }
+
     }
 }

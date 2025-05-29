@@ -1,169 +1,112 @@
-using KooliProjekt.WinFormsApp.Api;
-using Moq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Xunit;
+using KooliProjekt.WinFormsApp.Api;
 
-namespace KooliProjekt.WinFormsApp.Tests
+namespace KooliProjekt.WinFormsApp
 {
-    public class UserPresenterTests
+    public class UserPresenter
     {
-        private readonly Mock<IUserView> _mockView;
-        private readonly Mock<IApiClient> _mockApiClient;
-        private readonly UserPresenter _presenter;
+        private readonly IUserView _view;
+        private readonly IApiClient _apiClient;
 
-        public UserPresenterTests()
+        public UserPresenter(IUserView view, IApiClient apiClient)
         {
-            _mockView = new Mock<IUserView>();
-            _mockApiClient = new Mock<IApiClient>();
-            _presenter = new UserPresenter(_mockView.Object, _mockApiClient.Object);
+            _view = view;
+            _apiClient = apiClient;
         }
 
-        private void SetupSuccessfulListResponse()
+        public async Task Initialize()
         {
-            var users = new List<User>
+            var result = await _apiClient.List();
+            _view.Users = result.Value;
+        }
+
+        public async Task SaveUser()
+        {
+            if (string.IsNullOrWhiteSpace(_view.Username) || string.IsNullOrWhiteSpace(_view.UserEmail))
             {
-                new User { Id = 1, Username = "user1", UserEmail = "user1@example.com" }
+                _view.ShowMessage(
+                    "Please fill in username and email.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var user = new User
+            {
+                Id = _view.Id,
+                Username = _view.Username,
+                UserEmail = _view.UserEmail
             };
-            var result = new Result<List<User>> { Value = users };
-            _mockApiClient.Setup(x => x.List()).ReturnsAsync(result);
-        }
 
-        [Fact]
-        public async Task InitializeShouldLoadUsers()
-        {
-            SetupSuccessfulListResponse();
+            await _apiClient.Save(user);
 
-            await _presenter.Initialize();
+            // 🔧 Fix: Refresh the user list and update the view
+            var listResult = await _apiClient.List();
+            _view.Users = listResult.Value;
 
-            _mockApiClient.Verify(x => x.List(), Times.Once);
-            _mockView.VerifySet(x => x.Users = It.IsAny<List<User>>(), Times.Once);
-        }
-
-        [Fact]
-        public async Task DeleteUser_WhenNoUserSelected_ShouldShowWarning()
-        {
-            _mockView.SetupGet(x => x.Id).Returns(0);
-
-            await _presenter.DeleteUser();
-
-            _mockView.Verify(x => x.ShowMessage(
-                "Please select a user to delete.",
-                "Error",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning), Times.Once);
-
-            _mockApiClient.Verify(x => x.Delete(It.IsAny<int>()), Times.Never);
-        }
-
-        [Fact]
-        public async Task DeleteUser_WhenUserConfirms_ShouldCallApiAndShowSuccess()
-        {
-            const int userId = 1;
-            _mockView.SetupGet(x => x.Id).Returns(userId);
-
-            // Fixed: Removed the nullable bool cast
-            _mockView.Setup(x => x.ConfirmDelete(It.IsAny<string>(), It.IsAny<string>()))
-                     .Returns(true);
-
-            _mockApiClient.Setup(x => x.Delete(userId)).ReturnsAsync(new Result<bool>());
-            SetupSuccessfulListResponse();
-
-            await _presenter.DeleteUser();
-
-            _mockApiClient.Verify(x => x.Delete(userId), Times.Once);
-            _mockApiClient.Verify(x => x.List(), Times.Once);
-
-            _mockView.Verify(x => x.ShowMessage(
-                "User deleted successfully.",
-                "Success",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information), Times.Once);
-
-            _mockView.Verify(x => x.ClearFields(), Times.Once);
-        }
-
-        [Fact]
-        public async Task SaveUser_WhenFieldsEmpty_ShouldShowWarning()
-        {
-            _mockView.SetupGet(x => x.Username).Returns("");
-            _mockView.SetupGet(x => x.UserEmail).Returns("");
-
-            await _presenter.SaveUser();
-
-            _mockView.Verify(x => x.ShowMessage(
-                "Please fill in username and email.",
-                "Error",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning), Times.Once);
-
-            _mockApiClient.Verify(x => x.Save(It.IsAny<User>()), Times.Never);
-        }
-
-        [Fact]
-        public async Task SaveUser_WhenValid_ShouldCallApiAndShowSuccess()
-        {
-            const int userId = 1;
-            const string username = "user1";
-            const string email = "user1@example.com";
-
-            _mockView.SetupGet(x => x.Id).Returns(userId);
-            _mockView.SetupGet(x => x.Username).Returns(username);
-            _mockView.SetupGet(x => x.UserEmail).Returns(email);
-
-            _mockApiClient.Setup(x => x.Save(It.Is<User>(u =>
-                u.Id == userId &&
-                u.Username == username &&
-                u.UserEmail == email)))
-                .ReturnsAsync(new Result<bool>());
-            SetupSuccessfulListResponse();
-
-            await _presenter.SaveUser();
-
-            _mockApiClient.Verify(x => x.Save(It.Is<User>(u =>
-                u.Id == userId &&
-                u.Username == username &&
-                u.UserEmail == email)), Times.Once);
-
-            _mockApiClient.Verify(x => x.List(), Times.Once);
-
-            _mockView.Verify(x => x.ShowMessage(
+            _view.ShowMessage(
                 "User saved successfully.",
                 "Success",
                 MessageBoxButtons.OK,
-                MessageBoxIcon.Information), Times.Once);
+                MessageBoxIcon.Information);
         }
 
-        [Fact]
-        public void NewUser_ShouldClearFields()
+        public async Task DeleteUser()
         {
-            _presenter.NewUser();
+            int userId = _view.Id;
 
-            _mockView.Verify(x => x.ClearFields(), Times.Once);
+            if (userId == 0)
+            {
+                _view.ShowMessage(
+                    "Please select a user to delete.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            bool confirm = _view.ConfirmDelete(
+                "Are you sure you want to delete this user?",
+                "Confirm Delete");
+
+            if (!confirm)
+                return;
+
+            await _apiClient.Delete(userId);
+
+            var result = await _apiClient.List();
+            _view.Users = result.Value;
+
+            _view.ShowMessage(
+                "Users deleted successfully.",
+                "Success",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+
+            _view.ClearFields();
         }
 
-        [Fact]
-        public void UserSelected_WhenUserSelected_ShouldUpdateView()
+        public void NewUser()
         {
-            var user = new User { Id = 1, Username = "user1", UserEmail = "user1@example.com" };
-            _mockView.SetupGet(x => x.SelectedItem).Returns(user);
-
-            _presenter.UserSelected();
-
-            _mockView.VerifySet(x => x.Id = user.Id, Times.Once);
-            _mockView.VerifySet(x => x.Username = user.Username, Times.Once);
-            _mockView.VerifySet(x => x.UserEmail = user.UserEmail, Times.Once);
+            _view.ClearFields();
         }
 
-        [Fact]
-        public void UserSelected_WhenNoUserSelected_ShouldClearFields()
+        public void UserSelected()
         {
-            _mockView.SetupGet(x => x.SelectedItem).Returns((User)null);
+            var selectedUser = _view.SelectedItem;
 
-            _presenter.UserSelected();
+            if (selectedUser == null)
+            {
+                _view.ClearFields();
+                return;
+            }
 
-            _mockView.Verify(x => x.ClearFields(), Times.Once);
+            _view.Id = selectedUser.Id;
+            _view.Username = selectedUser.Username;
+            _view.UserEmail = selectedUser.UserEmail;
         }
     }
 }

@@ -70,16 +70,16 @@ namespace WpfApp1.Tests
             Assert.DoesNotContain(user, _viewModel.Users);
             Assert.Null(_viewModel.SelectedUser);
         }
-
+        // Test method
         [Fact]
         public async Task LoadUsers_ShouldPopulateUsers()
         {
             // Arrange
             var users = new List<User>
-            {
-                new User { Id = 1, Username = "User 1" },
-                new User { Id = 2, Username = "User 2" }
-            };
+    {
+        new User { Id = 1, Username = "User 1" },
+        new User { Id = 2, Username = "User 2" }
+    };
 
             _apiClientMock.Setup(api => api.List<User>())
                           .ReturnsAsync(new Result<List<User>> { Value = users });
@@ -90,11 +90,12 @@ namespace WpfApp1.Tests
             // Assert
             Assert.Equal(users.Count, _viewModel.Users.Count);
 
-            // Using property-based equality check:
             foreach (var user in users)
             {
                 Assert.Contains(_viewModel.Users, u => u.Id == user.Id && u.Username == user.Username);
             }
         }
+
+
     }
-}
+};

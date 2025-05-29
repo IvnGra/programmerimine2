@@ -18,10 +18,15 @@ namespace WpfApp1.Api
 
         public async Task<Result<List<User>>> List()
         {
-            var result = new Result<List<User>>();
+            var result = new Result<List<User>>
+            {
+                Value = new List<User>()  // Initialize to avoid null, even on error
+            };
             try
             {
-                result.Value = await _httpClient.GetFromJsonAsync<List<User>>("Users");
+                var users = await _httpClient.GetFromJsonAsync<List<User>>("Users");
+                if (users != null)
+                    result.Value = users;
             }
             catch (HttpRequestException)
             {
@@ -33,6 +38,8 @@ namespace WpfApp1.Api
             }
             return result;
         }
+
+
 
         public async Task<Result<User>> Save(User user)
         {
