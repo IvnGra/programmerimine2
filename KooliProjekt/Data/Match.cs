@@ -12,18 +12,10 @@ namespace KooliProjekt.Data
 
         public int TournamentId { get; set; }
         public Tournament? Tournament { get; set; }
-
-
         public int Team1Id { get; set; }
-        
-        public Team? Team1 { get; set; }
-
         public int Team2Id { get; set; }
-        
-        public Team? Team2 { get; set; }
-
         public DateTime Match_time { get; set; } = DateTime.Now;
-        public string? Round { get; set; }
+        public string Round { get; set; }
         public int Team1_goals { get; set; }
         public int Team2_goals { get; set; }
     }
