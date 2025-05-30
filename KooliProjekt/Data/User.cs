@@ -1,19 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace KooliProjekt.Data
+﻿namespace KooliProjekt.Data
 {
     public class User
     {
-        [Key]
         public int Id { get; set; }
-        public int UserId { get; set; }
-
-        [Required] // Ensures username is not null
-        [MaxLength(50)] // Optional: limits the length of the username
-        public string Username { get; set; } = string.Empty; // Default to prevent null
-        public  string UserEmail { get; set; }
-
-        public bool IsAdmin { get; set; } = false; // Default to false
-     
+        public int UserNumber { get; set; }      // matches UserId in UI
+        public string Name { get; set; }         // matches Username in UI
+        public string Email { get; set; }
+        public bool Admin { get; set; }           // matches IsAdmin in UI
     }
 }

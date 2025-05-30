@@ -1,4 +1,6 @@
-﻿namespace KooliProjekt.WinFormsApp
+﻿using System.Threading.Tasks;
+
+namespace KooliProjekt.WinFormsApp
 {
     public interface IUserPresenter
     {
@@ -9,3 +11,4 @@
         void UserSelected();
     }
 }
+    

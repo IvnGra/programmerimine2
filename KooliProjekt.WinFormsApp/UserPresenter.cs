@@ -1,95 +1,90 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using PublicApi.Api;
+using PublicApi.Api;  // User and ApiClient live here
 
 namespace KooliProjekt.WinFormsApp
 {
     public class UserPresenter : IUserPresenter
     {
-        private readonly IApiClient _apiClient;
         private readonly IUserView _view;
+        private readonly ApiClient _apiClient;
 
-        public UserPresenter(IUserView view, IApiClient apiClient)
+        public UserPresenter(IUserView view, ApiClient apiClient)
         {
             _view = view;
             _apiClient = apiClient;
+            _view.Presenter = this;
         }
 
         public async Task Initialize()
         {
-            await LoadUsers();
-        }
+            var result = await _apiClient.List();
 
-        private async Task LoadUsers()
-        {
-            var response = await _apiClient.List();
-            if (response.HasError)
+            if (result.HasErrors)
             {
-                _view.ShowMessage($"Error loading users: {response.Error}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                _view.ShowMessage(
+                    "Failed to load users: " + string.Join(", ", result.Errors.Select(e => e.Message)),
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _view.Users = new List<User>();
             }
-            _view.Users = (IList<Data.User>)response.Value;
-        }
-
-        public async Task DeleteUser()
-        {
-            if (_view.Id == 0)
+            else
             {
-                _view.ShowMessage("Please select a user to delete.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                _view.Users = result.Value;
             }
-
-            if (_view.ConfirmDelete("Are you sure you want to delete this user?", "Confirm Delete"))
-            {
-                var result = await _apiClient.Delete(_view.Id);
-                if (result.HasError)
-                {
-                    _view.ShowMessage($"Error deleting user: {result.Error}", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    _view.ShowMessage("Users deleted successfully.", "Success",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    await LoadUsers();
-                    _view.ClearFields();
-                }
-            }
+            _view.ClearFields();
         }
 
         public async Task SaveUser()
         {
-            if (string.IsNullOrWhiteSpace(_view.Username) || string.IsNullOrWhiteSpace(_view.UserEmail))
-            {
-                _view.ShowMessage("Please fill in username and email.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             var user = new User
             {
                 Id = _view.Id,
-                UserId = _view.UserId,
-                Username = _view.Username,
-                UserEmail = _view.UserEmail,
-                IsAdmin = _view.IsAdmin
+                UserNumber = _view.UserId,
+                Name = _view.Username,
+                Email = _view.UserEmail,
+                Admin = _view.IsAdmin
             };
 
             var result = await _apiClient.Save(user);
 
-            if (!result.HasError)
+            if (result.HasErrors)
             {
-                _view.ShowMessage($"Error saving user: {result.Error}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _view.ShowMessage(
+                    "Failed to save user: " + string.Join(", ", result.Errors.Select(e => e.Message)),
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                _view.ShowMessage("User saved successfully.", "Success",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                await LoadUsers();
+                _view.ClearFields();
+                await Initialize();
+            }
+        }
+
+        public async Task DeleteUser()
+        {
+            if (_view.SelectedItem == null)
+            {
+                _view.ShowMessage("No user selected", "Delete User", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (_view.ConfirmDelete("Are you sure you want to delete the selected user?", "Confirm Delete"))
+            {
+                var result = await _apiClient.Delete(_view.SelectedItem.Id);
+
+                if (result.HasErrors)
+                {
+                    _view.ShowMessage(
+                        "Failed to delete user: " + string.Join(", ", result.Errors.Select(e => e.Message)),
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    _view.ClearFields();
+                    await Initialize();
+                }
             }
         }
 
@@ -102,16 +97,12 @@ namespace KooliProjekt.WinFormsApp
         {
             if (_view.SelectedItem != null)
             {
-                var selected = _view.SelectedItem;
-                _view.Id = selected.Id;
-                _view.UserId = selected.UserId;
-                _view.Username = selected.Username;
-                _view.UserEmail = selected.UserEmail;
-                _view.IsAdmin = selected.IsAdmin;
-            }
-            else
-            {
-                _view.ClearFields();
+                var user = _view.SelectedItem;
+                _view.Id = user.Id;
+                _view.UserId = user.UserNumber;
+                _view.Username = user.Name;
+                _view.UserEmail = user.Email;
+                _view.IsAdmin = user.Admin;
             }
         }
     }

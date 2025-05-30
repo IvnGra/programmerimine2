@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using KooliProjekt.Data;
 
-
 namespace KooliProjekt.WinFormsApp
 {
     public interface IUserView
@@ -17,6 +16,7 @@ namespace KooliProjekt.WinFormsApp
         bool IsAdmin { get; set; }
 
         IUserPresenter Presenter { get; set; }
+
         void ShowMessage(string message, string caption, MessageBoxButtons buttons, MessageBoxIcon icon);
         bool ConfirmDelete(string message, string caption);
         void ClearFields();

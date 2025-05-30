@@ -103,8 +103,8 @@ namespace KooliProjekt.Data
             // Add sample users
             var users = new List<User>
             {
-                new User { Username = "john_doe", IsAdmin = true, UserEmail="" },
-                new User { Username = "jane_doe", IsAdmin = false, UserEmail="" }
+                new User { Name = "john_doe", Admin = true, Email="" },
+                new User { Name = "jane_doe", Admin = false, Email="" }
             };
 
             context.Users.AddRange(users);

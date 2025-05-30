@@ -1,8 +1,9 @@
 ﻿using PublicApi.Api;
-using PublicAPI.Api;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Windows.Forms;
+using KooliProjekt.Data;
 
 namespace KooliProjekt.WinFormsApp
 {
@@ -14,7 +15,7 @@ namespace KooliProjekt.WinFormsApp
         public Form1()
         {
             InitializeComponent();
-            Presenter = new UserPresenter(this, new ApiClient()); // ✅ concrete presenter
+            Presenter = new UserPresenter(this, new ApiClient(new HttpClient()));
             InitializeDataGridView();
         }
 
@@ -26,7 +27,6 @@ namespace KooliProjekt.WinFormsApp
 
         #region IUserView Implementation
 
-        // ✅ Implements both get and set as required by the interface
         public IUserPresenter Presenter
         {
             get => _presenter;
@@ -39,7 +39,7 @@ namespace KooliProjekt.WinFormsApp
             set => _bindingSource.DataSource = value;
         }
 
-        public User? SelectedItem => UsersGrid.SelectedRows.Count > 0
+        public User SelectedItem => UsersGrid.SelectedRows.Count > 0
             ? (User)UsersGrid.SelectedRows[0].DataBoundItem
             : null;
 
@@ -72,9 +72,6 @@ namespace KooliProjekt.WinFormsApp
             get => IsAdminCheckbox.Checked;
             set => IsAdminCheckbox.Checked = value;
         }
-        IList<Data.User> IUserView.Users { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        Data.User IUserView.SelectedItem => throw new NotImplementedException();
 
         public void ShowMessage(string message, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
@@ -137,14 +134,14 @@ namespace KooliProjekt.WinFormsApp
 
             UsersGrid.Columns.Add(new DataGridViewTextBoxColumn()
             {
-                DataPropertyName = "UserId",
+                DataPropertyName = "UserNumber",
                 HeaderText = "User ID",
                 Width = 75
             });
 
             UsersGrid.Columns.Add(new DataGridViewTextBoxColumn()
             {
-                DataPropertyName = "Username",
+                DataPropertyName = "Name",
                 HeaderText = "Username",
                 Width = 150,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
@@ -152,14 +149,14 @@ namespace KooliProjekt.WinFormsApp
 
             UsersGrid.Columns.Add(new DataGridViewTextBoxColumn()
             {
-                DataPropertyName = "UserEmail",
+                DataPropertyName = "Email",
                 HeaderText = "Email",
                 Width = 200
             });
 
             UsersGrid.Columns.Add(new DataGridViewCheckBoxColumn()
             {
-                DataPropertyName = "IsAdmin",
+                DataPropertyName = "Admin",
                 HeaderText = "Admin",
                 Width = 50
             });
