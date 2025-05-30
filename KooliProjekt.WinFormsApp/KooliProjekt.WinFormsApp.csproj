@@ -8,10 +8,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Desktop\branch master\KooliProjekt\KooliProjekt.csproj" />
-    <ProjectReference Include="..\..\Desktop\branch master\PublicApi\PublicApi.csproj" />
-    <ProjectReference Include="..\PublicApi\PublicApi.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\PublicApi\PublicApi.csproj" />
+		<ProjectReference Include="..\KooliProjekt\KooliProjekt.csproj" />
+	</ItemGroup>
+
 
 </Project>

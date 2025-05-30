@@ -1,26 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace PublicApi.Api
+public class Result
 {
-    // Base Result class without value but error info
-    public class Result
+    public Dictionary<string, string> Errors { get; private set; } = new Dictionary<string, string>();
+
+    public bool HasErrors => Errors.Count > 0;
+
+    public void AddError(string key, string message)
     {
-        // Store errors as dictionary with key and message
-        public Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
-
-        public bool HasErrors => Errors.Count > 0;
-
-        // Add or update error by key
-        public void AddError(object key, object value)
-        {
-            var keyStr = key?.ToString() ?? "";
-            var valueStr = value?.ToString() ?? "";
-
-            if (Errors.ContainsKey(keyStr))
-                Errors[keyStr] = valueStr;
-            else
-                Errors.Add(keyStr, valueStr);
-        }
+        Errors[key] = message;
     }
 }
-
