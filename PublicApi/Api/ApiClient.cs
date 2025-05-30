@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace PublicApi.Api
 {
-
     public class ApiClient : IApiClient
     {
         private readonly HttpClient _httpClient;
+        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
         public ApiClient(HttpClient httpClient)
         {
@@ -28,8 +31,12 @@ namespace PublicApi.Api
                 var response = await _httpClient.GetAsync("Users");
                 if (response.IsSuccessStatusCode)
                 {
-                    var users = await JsonSerializer.DeserializeAsync<List<User>>(await response.Content.ReadAsStreamAsync());
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    var users = await JsonSerializer.DeserializeAsync<List<User>>(stream, _jsonOptions);
                     result.Value = users ?? new List<User>();
+
+                    if (users == null)
+                        result.AddError("Deserialization", "Could not deserialize the user list.");
                 }
                 else
                 {
@@ -53,8 +60,12 @@ namespace PublicApi.Api
                 var response = await _httpClient.GetAsync($"Users/{id}");
                 if (response.IsSuccessStatusCode)
                 {
-                    var user = await JsonSerializer.DeserializeAsync<User>(await response.Content.ReadAsStreamAsync());
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    var user = await JsonSerializer.DeserializeAsync<User>(stream, _jsonOptions);
                     result.Value = user ?? new User();
+
+                    if (user == null)
+                        result.AddError("Deserialization", "Could not deserialize the user.");
                 }
                 else
                 {
@@ -84,8 +95,12 @@ namespace PublicApi.Api
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var userResult = await JsonSerializer.DeserializeAsync<User>(await response.Content.ReadAsStreamAsync());
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    var userResult = await JsonSerializer.DeserializeAsync<User>(stream, _jsonOptions);
                     result.Value = userResult ?? new User();
+
+                    if (userResult == null)
+                        result.AddError("Deserialization", "Could not deserialize the saved user.");
                 }
                 else
                 {
