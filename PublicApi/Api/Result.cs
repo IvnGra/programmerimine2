@@ -1,33 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace PublicApi.Api
 {
+    // Base Result class without value but error info
     public class Result
     {
-        public string Error { get; set; }
+        // Store errors as dictionary with key and message
+        public Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
 
-        public bool HasError
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(Error);
-            }
-        }
+        public bool HasErrors => Errors.Count > 0;
 
-        internal void AddError(object key, object value)
+        // Add or update error by key
+        public void AddError(object key, object value)
         {
-            throw new NotImplementedException();
-        }
+            var keyStr = key?.ToString() ?? "";
+            var valueStr = value?.ToString() ?? "";
 
-        public static explicit operator Result(Result<User> v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static explicit operator Result(Result<List<User>> v)
-        {
-            throw new NotImplementedException();
+            if (Errors.ContainsKey(keyStr))
+                Errors[keyStr] = valueStr;
+            else
+                Errors.Add(keyStr, valueStr);
         }
     }
 }
+

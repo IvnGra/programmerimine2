@@ -1,12 +1,9 @@
-﻿namespace PublicApi.Api
-{
-    public class User
-    {
-        public int Id { get; set; }
-        public int UserId { get; set; }
-        public string Username { get; set; }
-        public string UserEmail { get; set; }
-        public bool IsAdmin { get; set; }
-    }
+﻿using System.ComponentModel.DataAnnotations;
 
+public class User
+{
+    public int Id { get; set; }
+
+    [Required(ErrorMessage = "Name is required")]
+    public string Name { get; set; } = string.Empty;
 }

@@ -13,13 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KooliProjekt.WpfApp.UnitTests", "KooliProjekt.WpfApp.UnitTests\KooliProjekt.WpfApp.UnitTests.csproj", "{DDE61E15-05C7-4AF3-973B-59214A68F226}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KooliProjekt.WinFormsApp", "..\..\Documents\KooliProjekt.WinFormsApp\KooliProjekt.WinFormsApp.csproj", "{62BEEABF-4D14-4096-8CFE-0F1E071BC53B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KooliProjekt.WinFormsApp.UnitTests", "KooliProjekt.WinFormsApp.UnitTests\KooliProjekt.WinFormsApp.UnitTests.csproj", "{E65FDB2E-95C4-4A00-A5D5-7DF0931087FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KooliProjekt.BlazorApp", "KooliProjekt.BlazorApp\KooliProjekt.BlazorApp.csproj", "{5C322D42-D256-410C-A468-63D6F35A268E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicApi", "PublicApi\PublicApi.csproj", "{BA52D122-545F-45FE-9048-30BCE271B1BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KooliProjekt.WinFormsApp", "KooliProjekt.WinFormsApp\KooliProjekt.WinFormsApp.csproj", "{7BA4AB84-7D45-436A-BE98-1CE9413052FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +47,6 @@ Global
 		{DDE61E15-05C7-4AF3-973B-59214A68F226}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDE61E15-05C7-4AF3-973B-59214A68F226}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDE61E15-05C7-4AF3-973B-59214A68F226}.Release|Any CPU.Build.0 = Release|Any CPU
-		{62BEEABF-4D14-4096-8CFE-0F1E071BC53B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62BEEABF-4D14-4096-8CFE-0F1E071BC53B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62BEEABF-4D14-4096-8CFE-0F1E071BC53B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62BEEABF-4D14-4096-8CFE-0F1E071BC53B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E65FDB2E-95C4-4A00-A5D5-7DF0931087FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E65FDB2E-95C4-4A00-A5D5-7DF0931087FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E65FDB2E-95C4-4A00-A5D5-7DF0931087FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,6 +59,10 @@ Global
 		{BA52D122-545F-45FE-9048-30BCE271B1BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA52D122-545F-45FE-9048-30BCE271B1BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA52D122-545F-45FE-9048-30BCE271B1BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BA4AB84-7D45-436A-BE98-1CE9413052FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BA4AB84-7D45-436A-BE98-1CE9413052FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BA4AB84-7D45-436A-BE98-1CE9413052FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BA4AB84-7D45-436A-BE98-1CE9413052FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

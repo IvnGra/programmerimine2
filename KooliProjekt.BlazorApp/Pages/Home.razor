@@ -10,6 +10,10 @@
 {
     <p><em>Loading...</em></p>
 }
+else if (users.Count == 0)
+{
+    <p>No users found.</p>
+}
 else
 {
     <p><a class="btn btn-primary" href="/create">Add new</a></p>
@@ -17,7 +21,7 @@ else
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Title</th>
+                <th>Username</th>
                 <th></th>
             </tr>
         </thead>
@@ -29,7 +33,7 @@ else
                     <td>@user.Username</td>
                     <td>
                         <a href="/edit/@user.Id" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-primary" @onclick="() => Delete(user.Id)">Delete</button>
+                        <button class="btn btn-danger" @onclick="() => Delete(user.Id)">Delete</button>
                     </td>
                 </tr>
             }
