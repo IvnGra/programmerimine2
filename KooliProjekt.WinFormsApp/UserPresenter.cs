@@ -25,10 +25,11 @@ namespace KooliProjekt.WinFormsApp
             if (result.HasErrors)
             {
                 _view.ShowMessage(
-                    "Failed to load users: " + string.Join(", ", result.Errors.Select(e => e.Message)),
+                    "Failed to load users: " + string.Join(", ", result.Errors.Select(e => e.Value)),
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _view.Users = new List<User>();
             }
+
             else
             {
                 _view.Users = result.Value;
@@ -52,8 +53,9 @@ namespace KooliProjekt.WinFormsApp
             if (result.HasErrors)
             {
                 _view.ShowMessage(
-                    "Failed to save user: " + string.Join(", ", result.Errors.Select(e => e.Message)),
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                "Failed to save user: " + string.Join(", ", result.Errors.Select(e => e.Value)),
+                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
             else
             {
@@ -77,8 +79,9 @@ namespace KooliProjekt.WinFormsApp
                 if (result.HasErrors)
                 {
                     _view.ShowMessage(
-                        "Failed to delete user: " + string.Join(", ", result.Errors.Select(e => e.Message)),
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                     "Failed to delete user: " + string.Join(", ", result.Errors.Select(e => e.Value)),
+                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 }
                 else
                 {
