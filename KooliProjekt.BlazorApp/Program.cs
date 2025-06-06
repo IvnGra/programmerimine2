@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using KooliProjekt.PublicAPI.Api;
 using PublicApi.Api;
 
 namespace KooliProjekt.BlazorApp

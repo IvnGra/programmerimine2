@@ -30,7 +30,7 @@ else
             {
                 <tr>
                     <td>@user.Id</td>
-                    <td>@user.Name</td>
+                    <td>@user.Username</td>
                     <td>
                         <a href="/edit/@user.Id" class="btn btn-primary">Edit</a>
                         <button class="btn btn-danger" @onclick="() => Delete(user.Id)">Delete</button>

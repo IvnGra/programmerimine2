@@ -21,10 +21,10 @@
     <ValidationSummary />
 
     <div class="form-group row">
-        <label for="name" class="col-sm-2 col-form-label">Name</label>
+        <label for="name" class="col-sm-2 col-form-label">Username</label>
         <div class="col-sm-10">
-            <InputText id="name" class="form-control" placeholder="Name" @bind-Value="user.Name" />
-            <ValidationMessage For="@(() => user.Name)" />
+            <InputText id="name" class="form-control" placeholder="Name" @bind-Value="user.Username" />
+            <ValidationMessage For="@(() => user.Username)" />
         </div>
     </div>
 
@@ -62,8 +62,8 @@
 
             if (apiResult.HasErrors)
             {
-                AddValidationErrors(apiResult.Errors ?? new Dictionary<string, string> {
-                    { "General", "Unknown error while loading user" }
+                AddValidationErrors(apiResult.Errors ?? new Dictionary<string, List<string>> {
+                    { "General", new List<string> { "Unknown error while loading user" } }
                 });
                 return;
             }
@@ -91,8 +91,8 @@
 
             if (apiResult.HasErrors)
             {
-                AddValidationErrors(apiResult.Errors ?? new Dictionary<string, string> {
-                    { "General", "Unknown error while saving user" }
+                AddValidationErrors(apiResult.Errors ?? new Dictionary<string, List<string>> {
+                    { "General", new List<string> { "Unknown error while saving user" } }
                 });
                 return;
             }
@@ -105,15 +105,18 @@
         }
     }
 
-    private void AddValidationErrors(Dictionary<string, string> errors)
+    private void AddValidationErrors(Dictionary<string, List<string>> errors)
     {
         if (errors == null || !errors.Any())
             return;
 
         foreach (var error in errors)
         {
-            var fieldId = new FieldIdentifier(user, error.Key == "General" ? nameof(user.Name) : error.Key);
-            messageStore?.Add(fieldId, error.Value);
+            var fieldId = new FieldIdentifier(user, error.Key == "General" ? nameof(user.Username) : error.Key);
+            foreach (var message in error.Value)
+            {
+                messageStore?.Add(fieldId, message);
+            }
         }
         editContext?.NotifyValidationStateChanged();
     }

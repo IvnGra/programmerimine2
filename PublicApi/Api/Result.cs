@@ -1,13 +1,24 @@
 ﻿using System.Collections.Generic;
 
-public class Result
+namespace PublicApi.Api
 {
-    public Dictionary<string, string> Errors { get; private set; } = new Dictionary<string, string>();
-
-    public bool HasErrors => Errors.Count > 0;
-
-    public void AddError(string key, string message)
+    public class Result
     {
-        Errors[key] = message;
+        public Dictionary<string, List<string>> Errors { get; }
+
+        public bool HasErrors => Errors.Count > 0;
+
+        public Result()
+        {
+            Errors = new Dictionary<string, List<string>>();
+        }
+
+        public void AddError(string key, string message)
+        {
+            if (!Errors.ContainsKey(key))
+                Errors[key] = new List<string>();
+
+            Errors[key].Add(message);
+        }
     }
 }

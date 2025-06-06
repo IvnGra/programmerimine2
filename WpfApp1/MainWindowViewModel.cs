@@ -1,126 +1,161 @@
-﻿
+﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using PublicApi.Api;
-using System;
-using System.Threading.Tasks;
-using WpfApp1;
-using PublicAPI.Api;
 
 namespace WpfApp1
 {
-    public class MainWindowViewModel : NotifyPropertyChangedBase
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<User> Users { get; private set; }
-        public ICommand NewCommand { get; private set; }
-        public ICommand SaveCommand { get; private set; }
-        public ICommand DeleteCommand { get; private set; }
-        public Predicate<User> ConfirmDelete { get; set; }
-        public Action<string> OnError { get; set; }
-
         private readonly IApiClient _apiClient;
-
         private User _selectedUser;
-        public User SelectedUser
-        {
-            get { return _selectedUser; }
-            set
-            {
-                _selectedUser = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public MainWindowViewModel() : this(new ApiClient())
-        {
-            // Initializes and loads user data
-        }
 
         public MainWindowViewModel(IApiClient apiClient)
         {
-            _apiClient = apiClient;
+            _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));
             Users = new ObservableCollection<User>();
 
-            NewCommand = new RelayCommand<User>(
-                // Execute: Create a new User instance
-                user =>
-                {
-                    SelectedUser = new User();
-                }
-            );
-
-            SaveCommand = new RelayCommand<User>(
-                // Execute: Save the selected User
-                async user =>
-                {
-                    try
-                    {
-                        if (SelectedUser.Id == 0)
-                        {
-                            await _apiClient.Save(SelectedUser);  // Create new user
-                        }
-                        else
-                        {
-                            await _apiClient.Save(SelectedUser);  // Update existing user
-                        }
-                        await LoadUsers();  // Reload data after save
-                    }
-                    catch (Exception ex)
-                    {
-                        OnError?.Invoke($"Error while saving user: {ex.Message}");
-                    }
-                },
-                // CanExecute: Enable the command if SelectedUser is not null
-                user => SelectedUser != null
-            );
-
-            DeleteCommand = new RelayCommand<User>(
-                // Execute: Delete the selected User
-                async user =>
-                {
-                    try
-                    {
-                        if (ConfirmDelete?.Invoke(SelectedUser) ?? true)
-                        {
-                            await _apiClient.Delete(SelectedUser.Id);  // Delete user by ID
-                            Users.Remove(SelectedUser);
-                            SelectedUser = null;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        OnError?.Invoke($"Error while deleting user: {ex.Message}");
-                    }
-                },
-                // CanExecute: Enable the command if SelectedUser is not null
-                user => SelectedUser != null
-            );
+            NewCommand = new RelayCommand(CreateNewUser);
+            SaveCommand = new RelayCommand(SaveUser, CanSaveUser);
+            DeleteCommand = new RelayCommand(DeleteUser, CanDeleteUser);
         }
 
-        // ViewModel method
+        public ObservableCollection<User> Users { get; }
+
+        public User SelectedUser
+        {
+            get => _selectedUser;
+            set
+            {
+                if (_selectedUser != value)
+                {
+                    _selectedUser = value;
+                    OnPropertyChanged();
+                    ((RelayCommand)SaveCommand).RaiseCanExecuteChanged();
+                    ((RelayCommand)DeleteCommand).RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        public ICommand NewCommand { get; }
+        public ICommand SaveCommand { get; }
+        public ICommand DeleteCommand { get; }
+
+        public Func<User, bool> ConfirmDelete { get; set; }
+        public Action<string> OnError { get; set; }
+
         public async Task LoadUsers()
         {
-            Users.Clear();
-
-            var result = await _apiClient.List<User>();
-
-            if (result == null || result.Value == null)
+            try
             {
-                OnError?.Invoke("Failed to load users. The response was null.");
-                return;
+                var result = await _apiClient.List();
+                if (result.HasErrors)
+                {
+                    OnError?.Invoke("Failed to load users: " + string.Join(", ", result.Errors));
+                    return;
+                }
+
+                Users.Clear();
+                foreach (var user in result.Value)
+                    Users.Add(user);
             }
-
-            if (!string.IsNullOrEmpty(result.Error))
+            catch (Exception ex)
             {
-                OnError?.Invoke($"Error from server: {result.Error}");
-                return;
-            }
-
-            foreach (var user in result.Value)
-            {
-                Users.Add(user);
+                OnError?.Invoke($"Exception loading users: {ex.Message}");
             }
         }
 
+        private void CreateNewUser()
+        {
+            SelectedUser = new User();
+        }
+
+        private async void SaveUser()
+        {
+            if (SelectedUser == null) return;
+
+            try
+            {
+                var result = await _apiClient.Save(SelectedUser);
+                if (result.HasErrors)
+                {
+                    OnError?.Invoke("Save failed: " + string.Join(", ", result.Errors));
+                    return;
+                }
+
+                await LoadUsers();
+                SelectedUser = result.Value; // Refresh selection with saved user
+            }
+            catch (Exception ex)
+            {
+                OnError?.Invoke($"Failed to save user: {ex.Message}");
+            }
+        }
+
+        private bool CanSaveUser()
+        {
+            return SelectedUser != null
+                && !string.IsNullOrWhiteSpace(SelectedUser.Username)
+                && !string.IsNullOrWhiteSpace(SelectedUser.UserEmail);
+        }
+
+        private async void DeleteUser()
+        {
+            if (SelectedUser == null || SelectedUser.Id == 0) return;
+
+            if (ConfirmDelete?.Invoke(SelectedUser) != true)
+                return;
+
+            try
+            {
+                var result = await _apiClient.Delete(SelectedUser.Id);
+                if (result.HasErrors)
+                {
+                    OnError?.Invoke("Delete failed: " + string.Join(", ", result.Errors));
+                    return;
+                }
+
+                Users.Remove(SelectedUser);
+                SelectedUser = null;
+            }
+            catch (Exception ex)
+            {
+                OnError?.Invoke($"Failed to delete user: {ex.Message}");
+            }
+        }
+
+        private bool CanDeleteUser()
+        {
+            return SelectedUser != null && SelectedUser.Id > 0;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+
+    // RelayCommand implementation
+    public class RelayCommand : ICommand
+    {
+        private readonly Action _execute;
+        private readonly Func<bool> _canExecute;
+
+        public RelayCommand(Action execute, Func<bool> canExecute = null)
+        {
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _canExecute = canExecute;
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
+
+        public void Execute(object parameter) => _execute();
+
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

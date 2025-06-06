@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
-using System.Text.Json;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace PublicApi.Api
@@ -10,10 +9,14 @@ namespace PublicApi.Api
     public class ApiClient : IApiClient
     {
         private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+
+        public ApiClient()
         {
-            PropertyNameCaseInsensitive = true
-        };
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri("https://localhost:7136/api/")
+            };
+        }
 
         public ApiClient(HttpClient httpClient)
         {
@@ -25,115 +28,96 @@ namespace PublicApi.Api
         public async Task<Result<List<User>>> List()
         {
             var result = new Result<List<User>>();
-
             try
             {
-                var response = await _httpClient.GetAsync("Users");
-                if (response.IsSuccessStatusCode)
-                {
-                    var stream = await response.Content.ReadAsStreamAsync();
-                    var users = await JsonSerializer.DeserializeAsync<List<User>>(stream, _jsonOptions);
-                    result.Value = users ?? new List<User>();
-
-                    if (users == null)
-                        result.AddError("Deserialization", "Could not deserialize the user list.");
-                }
-                else
-                {
-                    result.AddError("HttpError", $"Failed to fetch users. Status code: {response.StatusCode}");
-                }
+                var users = await _httpClient.GetFromJsonAsync<List<User>>("Users");
+                result.Value = users ?? new List<User>();
             }
             catch (Exception ex)
             {
-                result.AddError("Exception", ex.Message);
+                result.AddError("_", ex.Message);
             }
-
-            return result;
-        }
-
-        public async Task<Result<User>> Get(int id)
-        {
-            var result = new Result<User>();
-
-            try
-            {
-                var response = await _httpClient.GetAsync($"Users/{id}");
-                if (response.IsSuccessStatusCode)
-                {
-                    var stream = await response.Content.ReadAsStreamAsync();
-                    var user = await JsonSerializer.DeserializeAsync<User>(stream, _jsonOptions);
-                    result.Value = user ?? new User();
-
-                    if (user == null)
-                        result.AddError("Deserialization", "Could not deserialize the user.");
-                }
-                else
-                {
-                    result.AddError("HttpError", $"Failed to fetch user {id}. Status code: {response.StatusCode}");
-                }
-            }
-            catch (Exception ex)
-            {
-                result.AddError("Exception", ex.Message);
-            }
-
             return result;
         }
 
         public async Task<Result<User>> Save(User user)
         {
             var result = new Result<User>();
-            HttpResponseMessage response;
-            var content = new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json");
-
             try
             {
+                HttpResponseMessage response;
                 if (user.Id == 0)
-                    response = await _httpClient.PostAsync("Users", content);
+                    response = await _httpClient.PostAsJsonAsync("Users", user);
                 else
-                    response = await _httpClient.PutAsync($"Users/{user.Id}", content);
+                    response = await _httpClient.PutAsJsonAsync($"Users/{user.Id}", user);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var stream = await response.Content.ReadAsStreamAsync();
-                    var userResult = await JsonSerializer.DeserializeAsync<User>(stream, _jsonOptions);
-                    result.Value = userResult ?? new User();
-
-                    if (userResult == null)
-                        result.AddError("Deserialization", "Could not deserialize the saved user.");
+                    var savedUser = await response.Content.ReadFromJsonAsync<User>();
+                    result.Value = savedUser ?? new User();
                 }
                 else
                 {
-                    result.AddError("HttpError", $"Save failed with status code {response.StatusCode}");
-                    result.Value = user;
+                    var errorResult = await response.Content.ReadFromJsonAsync<Result>();
+                    if (errorResult != null)
+                    {
+                        foreach (var kvp in errorResult.Errors)
+                            foreach (var msg in kvp.Value)
+                                result.AddError(kvp.Key, msg);
+                    }
+                    else
+                    {
+                        result.AddError("_", $"HTTP {(int)response.StatusCode}: {response.ReasonPhrase}");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                result.AddError("Exception", ex.Message);
-                result.Value = user;
+                result.AddError("_", ex.Message);
             }
-
             return result;
         }
 
         public async Task<Result> Delete(int id)
         {
             var result = new Result();
-
             try
             {
                 var response = await _httpClient.DeleteAsync($"Users/{id}");
                 if (!response.IsSuccessStatusCode)
                 {
-                    result.AddError("HttpError", $"Delete failed with status code {response.StatusCode}");
+                    var errorResult = await response.Content.ReadFromJsonAsync<Result>();
+                    if (errorResult != null)
+                    {
+                        foreach (var kvp in errorResult.Errors)
+                            foreach (var msg in kvp.Value)
+                                result.AddError(kvp.Key, msg);
+                    }
+                    else
+                    {
+                        result.AddError("_", $"HTTP {(int)response.StatusCode}: {response.ReasonPhrase}");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                result.AddError("Exception", ex.Message);
+                result.AddError("_", ex.Message);
             }
+            return result;
+        }
 
+        public async Task<Result<User>> Get(int id)
+        {
+            var result = new Result<User>();
+            try
+            {
+                var user = await _httpClient.GetFromJsonAsync<User>($"Users/{id}");
+                result.Value = user ?? new User();
+            }
+            catch (Exception ex)
+            {
+                result.AddError("_", ex.Message);
+            }
             return result;
         }
     }

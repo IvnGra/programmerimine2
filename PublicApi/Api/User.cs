@@ -1,12 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-public class User
+namespace PublicApi.Api
 {
-    public int Id { get; set; }
+    public class User
+    {
+        public int Id { get; set; }
 
-    [Required(ErrorMessage = "Name is required")]
-    public string Name { get; set; } = string.Empty;
-    public int UserNumber { get; set; }    
-    public string Email { get; set; }
-    public bool Admin { get; set; }
+        [Required(ErrorMessage = "Username is required")]
+        public string Username { get; set; } = string.Empty;
+
+        public string UserEmail { get; set; } = string.Empty;
+
+        public bool IsAdmin { get; set; }
+    }
 }

@@ -20,7 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="KooliProjekt.WinFormsApp/Kooliprojekt.WinFormsApp.csproj" />
+		<ProjectReference Include="..\KooliProjekt.WinFormsApp\KooliProjekt.WinFormsApp.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

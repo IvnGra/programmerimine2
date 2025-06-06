@@ -1,4 +1,9 @@
-﻿public class Result<T> : Result
+﻿using PublicApi.Api;
+
+namespace PublicApi.Api
 {
-    public T Value { get; set; } = default!;
+    public class Result<T> : Result
+    {
+        public T Value { get; set; } = default!;
+    }
 }
