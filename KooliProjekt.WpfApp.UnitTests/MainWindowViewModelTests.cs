@@ -22,7 +22,7 @@ namespace WpfApp1.Tests
         public void NewCommand_ShouldCreateNewUser()
         {
             // Act
-            ((RelayCommand<User>)_viewModel.NewCommand).Execute(null);
+            _viewModel.NewCommand.Execute(null);
 
             // Assert
             Assert.NotNull(_viewModel.SelectedUser);
@@ -37,17 +37,17 @@ namespace WpfApp1.Tests
             _viewModel.SelectedUser = user;
 
             _apiClientMock.Setup(api => api.Save(It.IsAny<User>()))
-                          .ReturnsAsync(new Result<bool> { Value = true });
+               .ReturnsAsync((User u) => new Result<User> { Value = u });
 
-            _apiClientMock.Setup(api => api.List<User>())
+            _apiClientMock.Setup(api => api.List())
                           .ReturnsAsync(new Result<List<User>> { Value = new List<User> { user } });
 
             // Act  
-            await Task.Run(() => ((RelayCommand<User>)_viewModel.SaveCommand).Execute(null));
+            await Task.Run(() => _viewModel.SaveCommand.Execute(null));
 
             // Assert  
             _apiClientMock.Verify(api => api.Save(It.IsAny<User>()), Times.Once);
-            _apiClientMock.Verify(api => api.List<User>(), Times.Once);
+            _apiClientMock.Verify(api => api.List(), Times.Once);
         }
 
         [Fact]
@@ -63,25 +63,25 @@ namespace WpfApp1.Tests
                           .ReturnsAsync(new Result<bool> { Value = true });
 
             // Act  
-            await Task.Run(() => ((RelayCommand<User>)_viewModel.DeleteCommand).Execute(null));
+            await Task.Run(() => _viewModel.DeleteCommand.Execute(null));
 
             // Assert  
             _apiClientMock.Verify(api => api.Delete(user.Id), Times.Once);
             Assert.DoesNotContain(user, _viewModel.Users);
             Assert.Null(_viewModel.SelectedUser);
         }
-        // Test method
+
         [Fact]
         public async Task LoadUsers_ShouldPopulateUsers()
         {
             // Arrange
             var users = new List<User>
-    {
-        new User { Id = 1, Username = "User 1" },
-        new User { Id = 2, Username = "User 2" }
-    };
+            {
+                new User { Id = 1, Username = "User 1" },
+                new User { Id = 2, Username = "User 2" }
+            };
 
-            _apiClientMock.Setup(api => api.List<User>())
+            _apiClientMock.Setup(api => api.List())
                           .ReturnsAsync(new Result<List<User>> { Value = users });
 
             // Act
@@ -95,7 +95,5 @@ namespace WpfApp1.Tests
                 Assert.Contains(_viewModel.Users, u => u.Id == user.Id && u.Username == user.Username);
             }
         }
-
-
     }
-};
+}

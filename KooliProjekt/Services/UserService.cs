@@ -30,7 +30,7 @@ namespace KooliProjekt.Services
 
             if (!string.IsNullOrWhiteSpace(search.Keyword))
             {
-                query = query.Where(user => user.Name.Contains(search.Keyword) || user.Email.Contains(search.Keyword)); ;
+                query = query.Where(user => user.Username.Contains(search.Keyword) || user.UserEmail.Contains(search.Keyword)); ;
             }
 
             return await query.GetPagedAsync(page, pageSize);

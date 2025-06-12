@@ -1,5 +1,5 @@
 using KooliProjekt.WinFormsApp;
-using KooliProjekt.PublicAPI.Api;
+using PublicApi.Api;
 
 namespace WinFormsApp
 {

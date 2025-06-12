@@ -15,7 +15,9 @@ namespace WpfApp1
         }
 
         public event EventHandler CanExecuteChanged;
+
         public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
+
         public void Execute(object parameter) => _execute();
 
         public void RaiseCanExecuteChanged()

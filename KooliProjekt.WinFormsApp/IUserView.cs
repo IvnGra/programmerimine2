@@ -1,21 +1,23 @@
-﻿using KooliProjekt.PublicAPI.Api;
+﻿using PublicApi.Api;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
-namespace KooliProjekt.WinFormsApp;
-
-public interface IUserView
+namespace KooliProjekt.WinFormsApp
 {
-    UserPresenter Presenter { get; set; }
+    public interface IUserView
+    {
+        UserPresenter Presenter { get; set; }
 
-    IList<User> Users { get; set; }  // Use local User here
-    User SelectedItem { get; }
+        IList<User> Users { get; set; }
+        User SelectedItem { get; }
 
-    int Id { get; set; }
-    string Username { get; set; }
-    string UserEmail { get; set; }
-    bool IsAdmin { get; set; }
+        int Id { get; set; }
+        string Username { get; set; }
+        string UserEmail { get; set; }
+        bool IsAdmin { get; set; }
 
-    // Add these methods to match calls in presenter
-    void ShowMessage(string message, string caption, MessageBoxButtons buttons, MessageBoxIcon icon);
-    bool ConfirmDelete(string message, string caption);
-    void ClearFields();
+        void ShowMessage(string message, string caption, MessageBoxButtons buttons, MessageBoxIcon icon);
+        bool ConfirmDelete(string message, string caption);
+        void ClearFields();
+    }
 }

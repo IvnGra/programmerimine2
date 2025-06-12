@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+namespace KooliProjekt.Data;
 public class User
 {
     public int Id { get; set; }

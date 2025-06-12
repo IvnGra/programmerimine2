@@ -21,162 +21,146 @@ namespace KooliProjekt.WinFormsApp
 
         private void InitializeComponent()
         {
-            UsersGrid = new System.Windows.Forms.DataGridView();
-            IdLabel = new System.Windows.Forms.Label();
-            IdField = new System.Windows.Forms.TextBox();
-            UserIdLabel = new System.Windows.Forms.Label();
-            UserIdField = new System.Windows.Forms.TextBox();
-            UsernameLabel = new System.Windows.Forms.Label();
-            UsernameField = new System.Windows.Forms.TextBox();
-            UserEmailLabel = new System.Windows.Forms.Label();
-            UserEmailField = new System.Windows.Forms.TextBox();
-            IsAdminLabel = new System.Windows.Forms.Label();
-            IsAdminCheckbox = new System.Windows.Forms.CheckBox();
-            NewButton = new System.Windows.Forms.Button();
-            SaveButton = new System.Windows.Forms.Button();
-            DeleteButton = new System.Windows.Forms.Button();
-
-            ((System.ComponentModel.ISupportInitialize)(UsersGrid)).BeginInit();
+            UsersGrid = new DataGridView();
+            IdLabel = new Label();
+            IdField = new TextBox();
+            UserIdLabel = new Label();
+            UserIdField = new TextBox();
+            UsernameLabel = new Label();
+            UsernameField = new TextBox();
+            UserEmailLabel = new Label();
+            UserEmailField = new TextBox();
+            IsAdminLabel = new Label();
+            IsAdminCheckbox = new CheckBox();
+            NewButton = new Button();
+            SaveButton = new Button();
+            DeleteButton = new Button();
+            ((System.ComponentModel.ISupportInitialize)UsersGrid).BeginInit();
             SuspendLayout();
-
             // 
             // UsersGrid
             // 
-            UsersGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            UsersGrid.Location = new System.Drawing.Point(5, 6);
+            UsersGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            UsersGrid.Location = new Point(5, 6);
             UsersGrid.MultiSelect = false;
             UsersGrid.Name = "UsersGrid";
-            UsersGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            UsersGrid.Size = new System.Drawing.Size(450, 400);
+            UsersGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            UsersGrid.Size = new Size(450, 400);
             UsersGrid.TabIndex = 0;
-
             // 
             // IdLabel
             // 
             IdLabel.AutoSize = true;
-            IdLabel.Location = new System.Drawing.Point(470, 15);
+            IdLabel.Location = new Point(470, 15);
             IdLabel.Name = "IdLabel";
-            IdLabel.Size = new System.Drawing.Size(21, 15);
+            IdLabel.Size = new Size(21, 15);
             IdLabel.TabIndex = 1;
             IdLabel.Text = "ID:";
-
             // 
             // IdField
             // 
-            IdField.Location = new System.Drawing.Point(540, 12);
+            IdField.Location = new Point(540, 12);
             IdField.Name = "IdField";
             IdField.ReadOnly = true;
-            IdField.Size = new System.Drawing.Size(220, 23);
+            IdField.Size = new Size(220, 23);
             IdField.TabIndex = 2;
-
             // 
             // UserIdLabel
             // 
             UserIdLabel.AutoSize = true;
-            UserIdLabel.Location = new System.Drawing.Point(470, 50);
+            UserIdLabel.Location = new Point(470, 50);
             UserIdLabel.Name = "UserIdLabel";
-            UserIdLabel.Size = new System.Drawing.Size(46, 15);
+            UserIdLabel.Size = new Size(47, 15);
             UserIdLabel.TabIndex = 3;
             UserIdLabel.Text = "User ID:";
-
             // 
             // UserIdField
             // 
-            UserIdField.Location = new System.Drawing.Point(540, 47);
+            UserIdField.Location = new Point(540, 47);
             UserIdField.Name = "UserIdField";
-            UserIdField.Size = new System.Drawing.Size(220, 23);
+            UserIdField.Size = new Size(220, 23);
             UserIdField.TabIndex = 4;
-
             // 
             // UsernameLabel
             // 
             UsernameLabel.AutoSize = true;
-            UsernameLabel.Location = new System.Drawing.Point(470, 85);
+            UsernameLabel.Location = new Point(470, 85);
             UsernameLabel.Name = "UsernameLabel";
-            UsernameLabel.Size = new System.Drawing.Size(68, 15);
+            UsernameLabel.Size = new Size(63, 15);
             UsernameLabel.TabIndex = 5;
             UsernameLabel.Text = "Username:";
-
             // 
             // UsernameField
             // 
-            UsernameField.Location = new System.Drawing.Point(540, 82);
+            UsernameField.Location = new Point(540, 82);
             UsernameField.Name = "UsernameField";
-            UsernameField.Size = new System.Drawing.Size(220, 23);
+            UsernameField.Size = new Size(220, 23);
             UsernameField.TabIndex = 6;
-
             // 
             // UserEmailLabel
             // 
             UserEmailLabel.AutoSize = true;
-            UserEmailLabel.Location = new System.Drawing.Point(470, 120);
+            UserEmailLabel.Location = new Point(470, 120);
             UserEmailLabel.Name = "UserEmailLabel";
-            UserEmailLabel.Size = new System.Drawing.Size(67, 15);
+            UserEmailLabel.Size = new Size(65, 15);
             UserEmailLabel.TabIndex = 7;
             UserEmailLabel.Text = "User Email:";
-
             // 
             // UserEmailField
             // 
-            UserEmailField.Location = new System.Drawing.Point(540, 117);
+            UserEmailField.Location = new Point(540, 117);
             UserEmailField.Name = "UserEmailField";
-            UserEmailField.Size = new System.Drawing.Size(220, 23);
+            UserEmailField.Size = new Size(220, 23);
             UserEmailField.TabIndex = 8;
-
             // 
             // IsAdminLabel
             // 
             IsAdminLabel.AutoSize = true;
-            IsAdminLabel.Location = new System.Drawing.Point(470, 155);
+            IsAdminLabel.Location = new Point(470, 155);
             IsAdminLabel.Name = "IsAdminLabel";
-            IsAdminLabel.Size = new System.Drawing.Size(57, 15);
+            IsAdminLabel.Size = new Size(57, 15);
             IsAdminLabel.TabIndex = 9;
             IsAdminLabel.Text = "Is Admin:";
-
             // 
             // IsAdminCheckbox
             // 
-            IsAdminCheckbox.Location = new System.Drawing.Point(540, 151);
+            IsAdminCheckbox.Location = new Point(540, 153);
             IsAdminCheckbox.Name = "IsAdminCheckbox";
-            IsAdminCheckbox.Size = new System.Drawing.Size(20, 20);
+            IsAdminCheckbox.Size = new Size(20, 20);
             IsAdminCheckbox.TabIndex = 10;
-
             // 
             // NewButton
             // 
-            NewButton.Location = new System.Drawing.Point(470, 190);
+            NewButton.Location = new Point(470, 190);
             NewButton.Name = "NewButton";
-            NewButton.Size = new System.Drawing.Size(75, 25);
+            NewButton.Size = new Size(75, 25);
             NewButton.TabIndex = 11;
             NewButton.Text = "New";
             NewButton.UseVisualStyleBackColor = true;
-
             // 
             // SaveButton
             // 
-            SaveButton.Location = new System.Drawing.Point(555, 190);
+            SaveButton.Location = new Point(555, 190);
             SaveButton.Name = "SaveButton";
-            SaveButton.Size = new System.Drawing.Size(75, 25);
+            SaveButton.Size = new Size(75, 25);
             SaveButton.TabIndex = 12;
             SaveButton.Text = "Save";
             SaveButton.UseVisualStyleBackColor = true;
-
             // 
             // DeleteButton
             // 
-            DeleteButton.Location = new System.Drawing.Point(640, 190);
+            DeleteButton.Location = new Point(640, 190);
             DeleteButton.Name = "DeleteButton";
-            DeleteButton.Size = new System.Drawing.Size(75, 25);
+            DeleteButton.Size = new Size(75, 25);
             DeleteButton.TabIndex = 13;
             DeleteButton.Text = "Delete";
             DeleteButton.UseVisualStyleBackColor = true;
-
             // 
             // Form1
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(800, 450);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
             Controls.Add(DeleteButton);
             Controls.Add(SaveButton);
             Controls.Add(NewButton);
@@ -193,8 +177,7 @@ namespace KooliProjekt.WinFormsApp
             Controls.Add(UsersGrid);
             Name = "Form1";
             Text = "User Management";
-
-            ((System.ComponentModel.ISupportInitialize)(UsersGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)UsersGrid).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using KooliProjekt.PublicAPI.Api;
+using PublicApi.Api;
 
 namespace KooliProjekt.WinFormsApp
 {
@@ -40,13 +40,14 @@ namespace KooliProjekt.WinFormsApp
         {
             var result = await _apiClient.List();
 
-            if (result.IsSuccess)
+            if (!result.HasErrors)
             {
                 _userView.Users = result.Value ?? new List<User>();
             }
             else
             {
-                _userView.ShowMessage(result.Error ?? "Failed to load users.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var errors = result.Errors != null ? string.Join(", ", result.Errors) : "Failed to load users.";
+                _userView.ShowMessage(errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -66,14 +67,16 @@ namespace KooliProjekt.WinFormsApp
             };
 
             var result = await _apiClient.Save(user);
-            if (!result.IsSuccess)
-            {
-                _userView.ShowMessage(result.Error ?? "Failed to save user.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
+
+            if (!result.HasErrors)
             {
                 _userView.ClearFields();
                 await Load();
+            }
+            else
+            {
+                var errors = result.Errors != null ? string.Join(", ", result.Errors) : "Failed to save user.";
+                _userView.ShowMessage(errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -88,14 +91,16 @@ namespace KooliProjekt.WinFormsApp
             if (_userView.ConfirmDelete("Are you sure you want to delete the selected user?", "Confirm Delete"))
             {
                 var result = await _apiClient.Delete(_userView.SelectedItem.Id);
-                if (!result.IsSuccess)
-                {
-                    _userView.ShowMessage(result.Error ?? "Failed to delete user.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
+
+                if (!result.HasErrors)
                 {
                     _userView.ClearFields();
                     await Load();
+                }
+                else
+                {
+                    var errors = result.Errors != null ? string.Join(", ", result.Errors) : "Failed to delete user.";
+                    _userView.ShowMessage(errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

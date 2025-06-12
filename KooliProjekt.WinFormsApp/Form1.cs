@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using KooliProjekt.PublicAPI.Api;
+using PublicApi.Api;
 
 namespace KooliProjekt.WinFormsApp
 {
@@ -38,13 +38,17 @@ namespace KooliProjekt.WinFormsApp
             set => UsernameField.Text = value;
         }
 
-      
+        public bool IsAdmin
+        {
+            get => IsAdminCheckbox.Checked;
+            set => IsAdminCheckbox.Checked = value;
+        }
 
         public Form1()
         {
             InitializeComponent();
 
-            Presenter = new UserPresenter(this, new ApiClient()); // or your actual constructor
+            Presenter = new UserPresenter(this, new ApiClient());
 
             UsersGrid.AutoGenerateColumns = true;
             UsersGrid.DataSource = _bindingSource;
@@ -91,5 +95,24 @@ namespace KooliProjekt.WinFormsApp
         {
             await Presenter.Delete();
         }
+
+        public void ShowMessage(string message, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
+        {
+            MessageBox.Show(message, caption, buttons, icon);
+        }
+
+        public bool ConfirmDelete(string message, string caption)
+        {
+            return MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
+        public void ClearFields()
+        {
+            Id = 0;
+            Username = string.Empty;
+            UserEmail = string.Empty;
+            IsAdmin = false;
+        }
     }
+
 }
